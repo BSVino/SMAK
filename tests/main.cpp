@@ -18,5 +18,4 @@ int main(int argc, char** args)
 	test_mesh();
 	test_eangles();
 	test_matrix();
-	test_toys();
 }

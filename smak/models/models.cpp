@@ -17,8 +17,6 @@ GNU General Public License for more details.
 
 #include <files.h>
 
-#include <toys/toy_util.h>
-#include <toys/toy.h>
 #include <renderer/renderer.h>
 #include <textures/materiallibrary.h>
 #include <tinker/application.h>

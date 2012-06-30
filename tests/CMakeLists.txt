@@ -11,8 +11,7 @@ set (TEST_SOURCES
 	eangles.cpp
 	matrix.cpp
 	main.cpp
-	toys.cpp
 )
 
 add_executable (tests ${TEST_SOURCES})
-target_link_libraries (tests lwbase tinker modelconverter toys)
+target_link_libraries (tests lwbase tinker modelconverter)

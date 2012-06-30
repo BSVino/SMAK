@@ -22,7 +22,6 @@ if (WIN32)
 	set (CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO	"/ENTRY:mainCRTStartup /DEBUG /INCREMENTAL:NO" CACHE STRING "" FORCE)
 endif (WIN32)
 
-option(WITH_NETWORKING "Build with networking enabled." ON)
 option(WITH_EASTL "Use the super-fast (even in debug mode) EASTL STL library." ON)
 option(WITH_ASSIMP "Use the unfortunately named AssImp library to load more formats." ON)
 

@@ -32,7 +32,6 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON A
 #include <textures/texturelibrary.h>
 #include <textures/materiallibrary.h>
 #include <renderer/renderer.h>
-#include <toys/toy.h>
 
 tvector<CRenderingContext::CRenderContext> CRenderingContext::s_aContexts;
 
