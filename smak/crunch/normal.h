@@ -40,7 +40,7 @@ public:
 	bool					Texel(size_t w, size_t h, size_t& iTexel, size_t tw, size_t th, bool* abMask = NULL);
 
 	bool					IsGenerating() { return m_bIsGenerating; }
-	bool					DoneGenerating() { return m_bDoneGenerating || m_avecNormal2Texels != NULL; }
+	bool					DoneGenerating() { return m_bDoneGenerating || m_avecNormal2Texels.size(); }
 	void					StopGenerating() { m_bStopGenerating = true; }
 	bool					IsStopped() { return m_bStopGenerating; }
 
@@ -83,10 +83,10 @@ protected:
 	float					m_flNormalTextureLoDepth;
 	size_t					m_iNormal2Width;
 	size_t					m_iNormal2Height;
-	Vector*					m_avecTextureTexels;
-	float*					m_aflMidPassTexels;
-	float*					m_aflLowPassTexels;
-	Vector*					m_avecNormal2Texels;
+	tvector<Vector>			m_avecTextureTexels;
+	tvector<float>			m_aflMidPassTexels;
+	tvector<float>			m_aflLowPassTexels;
+	tvector<Vector>			m_avecNormal2Texels;
 	CTextureHandle			m_hNewNormal2;
 	bool					m_bNewNormal2Available;
 	bool					m_bNormal2Generated;

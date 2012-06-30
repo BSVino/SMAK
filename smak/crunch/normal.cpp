@@ -43,10 +43,6 @@ CNormalGenerator::CNormalGenerator(CConversionScene* pScene)
 	m_bStopGenerating = false;
 
 	m_iMaterial = 0;
-	m_avecTextureTexels = NULL;
-	m_aflMidPassTexels = NULL;
-	m_aflLowPassTexels = NULL;
-	m_avecNormal2Texels = NULL;
 	m_bNewNormal2Available = false;
 	m_bNormal2Generated = false;
 
@@ -57,14 +53,6 @@ CNormalGenerator::CNormalGenerator(CConversionScene* pScene)
 CNormalGenerator::~CNormalGenerator()
 {
 	free(m_bPixelMask);
-
-	if (m_avecNormal2Texels)
-	{
-		delete[] m_avecTextureTexels;
-		delete[] m_aflMidPassTexels;
-		delete[] m_aflLowPassTexels;
-		delete[] m_avecNormal2Texels;
-	}
 }
 
 void CNormalGenerator::Think()
@@ -130,7 +118,7 @@ void NormalizeHeightValue(void* pVoidData)
 
 void CNormalGenerator::NormalizeHeightValue(size_t x, size_t y)
 {
-	if (!m_avecTextureTexels)
+	if (!m_avecTextureTexels.size())
 		return;
 
 	float flHiScale = ((m_iNormal2Width+m_iNormal2Height)/2.0f)/200.0f * m_flNormalTextureDepth;
@@ -337,21 +325,16 @@ void CNormalGenerator::SetNormalTexture(size_t iMaterial)
 	// Don't let the listeners know yet, we want to generate the new one first so there is no lapse in displaying.
 //	m_bNewNormal2Available = true;
 
-	if (!m_avecTextureTexels)
-		m_avecTextureTexels = new Vector[hDiffuseTexture->m_iWidth*hDiffuseTexture->m_iHeight];
+	m_avecTextureTexels.resize(hDiffuseTexture->m_iWidth*hDiffuseTexture->m_iHeight);
 
-	CRenderer::ReadTextureFromGL(hDiffuseTexture, m_avecTextureTexels);
+	CRenderer::ReadTextureFromGL(hDiffuseTexture, m_avecTextureTexels.data());
 
 	m_iNormal2Width = hDiffuseTexture->m_iWidth;
 	m_iNormal2Height = hDiffuseTexture->m_iHeight;
 
-	if (!m_aflLowPassTexels)
-		m_aflLowPassTexels = new float[hDiffuseTexture->m_iWidth*hDiffuseTexture->m_iHeight];
-	if (!m_aflMidPassTexels)
-		m_aflMidPassTexels = new float[hDiffuseTexture->m_iWidth*hDiffuseTexture->m_iHeight];
-
-	if (!m_avecNormal2Texels)
-		m_avecNormal2Texels = new Vector[hDiffuseTexture->m_iWidth*hDiffuseTexture->m_iHeight];
+	m_aflLowPassTexels.resize(hDiffuseTexture->m_iWidth*hDiffuseTexture->m_iHeight);
+	m_aflMidPassTexels.resize(hDiffuseTexture->m_iWidth*hDiffuseTexture->m_iHeight);
+	m_avecNormal2Texels.resize(hDiffuseTexture->m_iWidth*hDiffuseTexture->m_iHeight);
 
 	Setup();
 
@@ -368,7 +351,7 @@ void CNormalGenerator::StartGenerationJobs()
 {
 	m_bNormal2Changed = false;
 
-	if (m_pNormal2Parallelizer && m_avecNormal2Texels)
+	if (m_pNormal2Parallelizer && m_avecNormal2Texels.size())
 	{
 		m_pNormal2Parallelizer->RestartJobs();
 		return;
@@ -396,10 +379,10 @@ void CNormalGenerator::StartGenerationJobs()
 
 void CNormalGenerator::RegenerateNormal2Texture()
 {
-	if (!m_avecNormal2Texels)
+	if (!m_avecNormal2Texels.size())
 		return;
 
-	m_hNewNormal2 = CTextureLibrary::AddTexture(m_avecNormal2Texels, m_iNormal2Width, m_iNormal2Height);
+	m_hNewNormal2 = CTextureLibrary::AddTexture(m_avecNormal2Texels.data(), m_iNormal2Width, m_iNormal2Height);
 
 	m_bNewNormal2Available = true;
 	m_bNormal2Generated = true;
