@@ -1,0 +1,7 @@
+newmtl Cube_Material_List_Material_0_Cube
+Ns 0
+Ka 0.24 0.24 0.24
+Ks 0.10 0.10 0.10
+Kd 0.500000 0.500000 0.500000 
+map_Kd Cube_Material_List_Material_0_Cube_texture.png
+

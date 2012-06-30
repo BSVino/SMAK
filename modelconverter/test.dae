@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA version="1.4.0" xmlns="http://www.collada.org/2005/11/COLLADASchema">
+	<asset>
+		<contributor>
+			<author>Illusoft Collada 1.4.0 plugin for Blender - http://colladablender.illusoft.com</author>
+			<authoring_tool>Blender v:249 - Illusoft Collada Exporter v:0.3.162</authoring_tool>
+			<comments></comments>
+			<copyright></copyright>
+			<source_data>file://C://</source_data>
+		</contributor>
+		<created>2009-10-30T11:53:59.114000</created>
+		<modified>2009-10-30T11:53:59.114000</modified>
+		<unit meter="0.01" name="centimeter"/>
+		<up_axis>Z_UP</up_axis>
+	</asset>
+	<library_cameras>
+		<camera id="Camera-Camera" name="Camera-Camera">
+			<optics>
+				<technique_common>
+					<perspective>
+						<yfov>49.13434</yfov>
+						<znear>0.1</znear>
+						<zfar>100.0</zfar>
+					</perspective>
+				</technique_common>
+			</optics>
+		</camera>
+	</library_cameras>
+	<library_effects>
+		<effect id="Material1-fx" name="Material1-fx">
+			<profile_COMMON>
+				<newparam sid="metal_png-surface">
+					<surface type="2D">
+						<init_from>metal_png-img</init_from>
+						<format>A8R8G8B8</format>
+					</surface>
+				</newparam>
+				<newparam sid="metal_png-sampler">
+					<sampler2D>
+						<source>metal_png-surface</source>
+						<minfilter>LINEAR_MIPMAP_LINEAR</minfilter>
+						<magfilter>LINEAR</magfilter>
+					</sampler2D>
+				</newparam>
+				<technique sid="blender">
+					<phong>
+						<emission>
+							<color>0.00000 0.00000 0.00000 1</color>
+						</emission>
+						<ambient>
+							<color>0.39804 0.25294 0.25490 1</color>
+						</ambient>
+						<diffuse>
+							<texture texcoord="CHANNEL1" texture="metal_png-sampler"/>
+						</diffuse>
+						<specular>
+							<color>0.00000 0.00000 0.00000 1</color>
+						</specular>
+						<shininess>
+							<float>16.0</float>
+						</shininess>
+						<reflective>
+							<color>0.80000 0.80000 0.80000 1</color>
+						</reflective>
+						<reflectivity>
+							<float>0.0</float>
+						</reflectivity>
+						<transparent>
+							<color>1 1 1 1</color>
+						</transparent>
+						<transparency>
+							<float>0.0</float>
+						</transparency>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="Material2-fx" name="Material2-fx">
+			<profile_COMMON>
+				<technique sid="blender">
+					<phong>
+						<emission>
+							<color>0.00000 0.00000 0.00000 1</color>
+						</emission>
+						<ambient>
+							<color>0.24314 0.25098 0.40000 1</color>
+						</ambient>
+						<diffuse>
+							<color>0.48627 0.50196 0.80000 1</color>
+						</diffuse>
+						<specular>
+							<color>0.45882 0.50000 0.00000 1</color>
+						</specular>
+						<shininess>
+							<float>16.0</float>
+						</shininess>
+						<reflective>
+							<color>0.35294 0.35294 0.35294 1</color>
+						</reflective>
+						<reflectivity>
+							<float>0.0</float>
+						</reflectivity>
+						<transparent>
+							<color>1 1 1 1</color>
+						</transparent>
+						<transparency>
+							<float>1.0</float>
+						</transparency>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+		<effect id="Material3-fx" name="Material3-fx">
+			<profile_COMMON>
+				<newparam sid="thick_pipe_png-surface">
+					<surface type="2D">
+						<init_from>thick_pipe_png-img</init_from>
+						<format>A8R8G8B8</format>
+					</surface>
+				</newparam>
+				<newparam sid="thick_pipe_png-sampler">
+					<sampler2D>
+						<source>thick_pipe_png-surface</source>
+						<minfilter>LINEAR_MIPMAP_LINEAR</minfilter>
+						<magfilter>LINEAR</magfilter>
+					</sampler2D>
+				</newparam>
+				<technique sid="blender">
+					<phong>
+						<emission>
+							<color>0.00000 0.00000 0.00000 1</color>
+						</emission>
+						<ambient>
+							<color>0.40000 0.40000 0.40000 1</color>
+						</ambient>
+						<diffuse>
+							<texture texcoord="CHANNEL1" texture="thick_pipe_png-sampler"/>
+						</diffuse>
+						<specular>
+							<color>0.00000 0.00000 0.00000 1</color>
+						</specular>
+						<shininess>
+							<float>16.0</float>
+						</shininess>
+						<reflective>
+							<color>0.80000 0.80000 0.80000 1</color>
+						</reflective>
+						<reflectivity>
+							<float>0.0</float>
+						</reflectivity>
+						<transparent>
+							<color>1 1 1 1</color>
+						</transparent>
+						<transparency>
+							<float>0.0</float>
+						</transparency>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+	</library_effects>
+	<library_images>
+		<image id="metal_png-img" name="metal_png-img">
+			<init_from>C:\svn\cf\trunk\content\source\models\props\hangar_ring\metal.png</init_from>
+		</image>
+		<image id="thick_pipe_png-img" name="thick_pipe_png-img">
+			<init_from>C:\svn\cf\trunk\content\source\models\props\hangar_ring\thick_pipe.png</init_from>
+		</image>
+	</library_images>
+	<library_lights>
+		<light id="Spot" name="Spot">
+			<technique_common>
+				<point>
+					<color>1.00000 1.00000 1.00000</color>
+					<constant_attenuation>1.0</constant_attenuation>
+					<linear_attenuation>0.0</linear_attenuation>
+					<quadratic_attenuation>0.0</quadratic_attenuation>
+				</point>
+			</technique_common>
+		</light>
+	</library_lights>
+	<library_materials>
+		<material id="Material1" name="Material1">
+			<instance_effect url="#Material1-fx"/>
+		</material>
+		<material id="Material2" name="Material2">
+			<instance_effect url="#Material2-fx"/>
+		</material>
+		<material id="Material3" name="Material3">
+			<instance_effect url="#Material3-fx"/>
+		</material>
+	</library_materials>
+	<library_geometries>
+		<geometry id="test_002" name="test_002">
+			<mesh>
+				<source id="test_002-Position">
+					<float_array count="72" id="test_002-Position-array">-2.88000 -26.07560 5.03999 -2.88000 41.29199 5.03999 0.00000 41.29199 5.76001 0.00000 -26.07560 5.76001 2.88000 41.29199 5.03999 2.88000 -26.07560 5.03999 -5.04004 -26.07560 2.88000 -5.04004 41.29199 2.88000 -5.76001 -26.07560 0.00000 -5.76001 41.29199 0.00000 -2.88000 -26.07560 -5.03999 -2.88000 41.29199 -5.03999 -5.04004 41.29199 -2.88000 -5.04004 -26.07560 -2.88000 5.04004 41.29199 2.88000 5.04004 -26.07560 2.88000 5.76001 41.29199 0.00000 5.76001 -26.07560 0.00000 5.04004 41.29199 -2.88000 5.04004 -26.07560 -2.88000 2.88000 41.29199 -5.03999 2.88000 -26.07560 -5.03999 0.00000 41.29199 -5.76001 0.00000 -26.07560 -5.76001</float_array>
+					<technique_common>
+						<accessor count="24" source="#test_002-Position-array" stride="3">
+							<param type="float" name="X"></param>
+							<param type="float" name="Y"></param>
+							<param type="float" name="Z"></param>
+						</accessor>
+					</technique_common>
+				</source>
+				<source id="test_002-Normals">
+					<float_array count="36" id="test_002-Normals-array">-0.24254 0.00000 0.97014 0.24254 0.00000 0.97014 -0.70710 0.00000 0.70711 -0.97014 0.00000 0.24253 -0.70710 0.00000 -0.70711 -0.97014 0.00000 -0.24253 0.70710 0.00000 0.70711 0.97014 0.00000 0.24253 0.97014 0.00000 -0.24253 0.70710 0.00000 -0.70711 0.24254 0.00000 -0.97014 -0.24254 0.00000 -0.97014</float_array>
+					<technique_common>
+						<accessor count="12" source="#test_002-Normals-array" stride="3">
+							<param type="float" name="X"></param>
+							<param type="float" name="Y"></param>
+							<param type="float" name="Z"></param>
+						</accessor>
+					</technique_common>
+				</source>
+				<source id="test_002-UV">
+					<float_array count="96" id="test_002-UV-array">0.02278 2.91404 0.02278 -1.91404 0.10194 -1.91404 0.10194 2.91404 0.98195 -1.91404 0.98195 2.91404 0.90279 2.91404 0.90279 -1.91404 0.18340 -1.91404 0.18340 2.91404 0.10194 2.91404 0.10194 -1.91404 0.26257 -1.91404 0.26257 2.91404 0.18340 2.91404 0.18340 -1.91404 0.42320 -1.91404 0.42320 2.91404 0.34174 2.91404 0.34174 -1.91404 0.34174 -1.91404 0.34174 2.91404 0.26257 2.91404 0.26257 -1.91404 0.82132 2.91404 0.82132 -1.91404 0.90279 -1.91404 0.90279 2.91404 0.74216 2.91404 0.74216 -1.91404 0.82132 -1.91404 0.82132 2.91404 0.66299 2.91404 0.66299 -1.91404 0.74216 -1.91404 0.74216 2.91404 0.58153 2.91404 0.58153 -1.91404 0.66299 -1.91404 0.66299 2.91404 0.50236 2.91404 0.50236 -1.91404 0.58153 -1.91404 0.58153 2.91404 0.42320 2.91404 0.42320 -1.91404 0.50236 -1.91404 0.50236 2.91404</float_array>
+					<technique_common>
+						<accessor count="48" source="#test_002-UV-array" stride="2">
+							<param type="float" name="S"></param>
+							<param type="float" name="T"></param>
+						</accessor>
+					</technique_common>
+				</source>
+				<vertices id="test_002-Vertex">
+					<input semantic="POSITION" source="#test_002-Position"/>
+				</vertices>
+				<polygons count="1" material="Material1">
+					<input offset="0" semantic="VERTEX" source="#test_002-Vertex"/>
+					<input offset="1" semantic="NORMAL" source="#test_002-Normals"/>
+					<input offset="2" semantic="TEXCOORD" source="#test_002-UV"/>
+					<p>4 6 24 5 6 25 15 6 26 14 6 27</p>
+				</polygons>
+				<polygons count="10" material="Material2">
+					<input offset="0" semantic="VERTEX" source="#test_002-Vertex"/>
+					<input offset="1" semantic="NORMAL" source="#test_002-Normals"/>
+					<input offset="2" semantic="TEXCOORD" source="#test_002-UV"/>
+					<p>5 1 4 4 1 5 2 1 6 3 1 7</p>
+					<p>0 2 8 1 2 9 7 2 10 6 2 11</p>
+					<p>6 3 12 7 3 13 9 3 14 8 3 15</p>
+					<p>13 4 16 12 4 17 11 4 18 10 4 19</p>
+					<p>8 5 20 9 5 21 12 5 22 13 5 23</p>
+					<p>14 7 28 15 7 29 17 7 30 16 7 31</p>
+					<p>16 8 32 17 8 33 19 8 34 18 8 35</p>
+					<p>18 9 36 19 9 37 21 9 38 20 9 39</p>
+					<p>20 10 40 21 10 41 23 10 42 22 10 43</p>
+					<p>22 11 44 23 11 45 10 11 46 11 11 47</p>
+				</polygons>
+				<polygons count="1" material="Material3">
+					<input offset="0" semantic="VERTEX" source="#test_002-Vertex"/>
+					<input offset="1" semantic="NORMAL" source="#test_002-Normals"/>
+					<input offset="2" semantic="TEXCOORD" source="#test_002-UV"/>
+					<p>1 0 0 0 0 1 3 0 2 2 0 3</p>
+				</polygons>
+			</mesh>
+		</geometry>
+	</library_geometries>
+	<library_visual_scenes>
+		<visual_scene id="Scene" name="Scene">
+			<node layer="L1" id="test" name="test">
+				<translate sid="translate">0.00000 0.00000 0.00000</translate>
+				<rotate sid="rotateZ">0 0 1 0.00000</rotate>
+				<rotate sid="rotateY">0 1 0 -0.00000</rotate>
+				<rotate sid="rotateX">1 0 0 0.00000</rotate>
+				<scale sid="scale">0.10000 0.10000 0.10000</scale>
+				<instance_geometry url="#test_002">
+					<bind_material>
+						<technique_common>
+							<instance_material symbol="Material1" target="#Material1">
+								<bind_vertex_input input_semantic="TEXCOORD" input_set="1" semantic="CHANNEL1"/>
+							</instance_material>
+							<instance_material symbol="Material2" target="#Material2">
+								<bind_vertex_input input_semantic="TEXCOORD" input_set="1" semantic="CHANNEL1"/>
+							</instance_material>
+							<instance_material symbol="Material3" target="#Material3">
+								<bind_vertex_input input_semantic="TEXCOORD" input_set="1" semantic="CHANNEL1"/>
+							</instance_material>
+						</technique_common>
+					</bind_material>
+				</instance_geometry>
+			</node>
+			<node layer="L1" id="Lamp" name="Lamp">
+				<translate sid="translate">4.07625 1.00545 5.90386</translate>
+				<rotate sid="rotateZ">0 0 1 106.93632</rotate>
+				<rotate sid="rotateY">0 1 0 3.16371</rotate>
+				<rotate sid="rotateX">1 0 0 37.26105</rotate>
+				<scale sid="scale">1.00000 1.00000 1.00000</scale>
+				<instance_light url="#Spot"/>
+			</node>
+			<node layer="L1" id="Camera" name="Camera">
+				<translate sid="translate">7.48113 -6.50764 5.34367</translate>
+				<rotate sid="rotateZ">0 0 1 46.69194</rotate>
+				<rotate sid="rotateY">0 1 0 0.61977</rotate>
+				<rotate sid="rotateX">1 0 0 63.55930</rotate>
+				<scale sid="scale">1.00000 1.00000 1.00000</scale>
+				<instance_camera url="#Camera-Camera"/>
+			</node>
+		</visual_scene>
+	</library_visual_scenes>
+	<library_physics_materials>
+		<physics_material id="test-PhysicsMaterial" name="test-PhysicsMaterial">
+			<technique_common>
+				<dynamic_friction>0.5</dynamic_friction>
+				<restitution>0.0</restitution>
+				<static_friction>0.5</static_friction>
+			</technique_common>
+		</physics_material>
+	</library_physics_materials>
+	<library_physics_models>
+		<physics_model id="Scene-PhysicsModel" name="Scene-PhysicsModel">
+			<rigid_body name="test-RigidBody" sid="test-RigidBody">
+				<technique_common>
+					<dynamic>false</dynamic>
+					<mass>0</mass>
+					<instance_physics_material url="#test-PhysicsMaterial"/>
+					<shape>
+						<instance_geometry url="#test_002"/>
+					</shape>
+				</technique_common>
+			</rigid_body>
+		</physics_model>
+	</library_physics_models>
+	<library_physics_scenes>
+		<physics_scene id="Scene-Physics" name="Scene-Physics">
+			<instance_physics_model url="#Scene-PhysicsModel">
+				<instance_rigid_body body="test-RigidBody" target="#test"/>
+			</instance_physics_model>
+		</physics_scene>
+	</library_physics_scenes>
+	<scene>
+		<instance_physics_scene url="#Scene-Physics"/>
+		<instance_visual_scene url="#Scene"/>
+	</scene>
+</COLLADA>

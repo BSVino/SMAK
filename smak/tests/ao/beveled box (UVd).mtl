@@ -1,0 +1,10 @@
+newmtl material25
+Ns 100.000
+d 1.00000
+illum 2
+Kd 1.00000 1.00000 1.00000
+Ka 0.00000 0.00000 0.00000
+Ks 1.00000 1.00000 1.00000
+Ke 0.00000e+0 0.00000e+0 0.00000e+0
+map_Kd C:\Users\scaron\Documents\DAZ 3D\Hexagon\Misc\Beveled Box\beveled box (3d-coat UVd)_Default_color.tga
+

@@ -1,0 +1,29 @@
+* All tests
+These tests should be free of ugly artifacts no matter what! Many tests have associated .xcf's (gimp files) with a hidden layer that contains a previous good-looking render of the AO, so matching that is a good goal.
+
+* test1
+This test contains two creased blocks of different color. The red block's color should bleed pleasantly onto the gray block and vice versa.
+
+* test2
+This test contains the blocks from test1, but with no creases, and subdivided twice. The red block's color should again bleed pleasantly onto the gray.
+
+* test3
+This test contains the blocks from test1, but with no creases, and not subdivided. This is to test the behavior of large, uncreased faces.
+
+* test4
+This test contains the red and gray blocks, but they have been welded together. Since they are not creased, the red may not be necessarily bleeding onto the gray.
+
+* test5
+This test contains the welded red and gray blocks, but they have been creased. The creased version should bleed the red onto the gray.
+
+* test6
+This test contains a bunch of strange geometry designed to test backface blacking and independent meshes. The pyramids should cast black shadows on the plane below, and the curved plane should cast a grayish red shadow on itself and on the pyramids.
+
+* head4.sia
+Smooth cranium without faceting
+
+* occ_test.obj
+Inward-facing polygons should work with raytracing and tri distance, and concave polygons.
+
+* beveled box (UVd)
+A small box that has some faces that are pure white that DevIL will output as pure black due to integer overfow if it is handled improperly.

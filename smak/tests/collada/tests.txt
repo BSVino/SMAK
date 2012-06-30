@@ -1,0 +1,14 @@
+* BikeFromXSI.dae
+A huuuuuge model with scaling and transformations on pretty much everything in the scene.
+
+* cube.dae
+Should be blue.
+
+* dice.dae
+Simple texture test. Requires instanced material mapping to be working.
+
+* duck.dae
+Non-quad/tri faces.
+
+* HatFromXSI.dae
+Hat is waaaaay off-center in the scene, and has some scaling and rotation applied to it that needs to be retained.

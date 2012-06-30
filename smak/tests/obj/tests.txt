@@ -1,0 +1,26 @@
+* heavy.obj
+It was exported by Max, it only has two values in the vertex specifies for each face vertex.
+It gives position and texture coordinate and expects the reading application to generate vertex normals.
+
+* sword_demon.obj
+It was also exported by Max (prob a different Max, somehow) and has no material specified before the faces begin.
+Also has tiny tiny vertex normals.
+
+* minhrifle.obj
+The AO looks like crap without proper smoothing groups loaded. Lots of smoothing groups in this model.
+
+* smoothinggroups.obj
+A simple model with the top face in a separate smoothing group.
+
+* car1backwheel.obj
+Negative vertex indices
+Turning smoothing groups off
+
+* bigmodel.obj
+It's minhrifle.obj copied twice, which results in a 10k poly model, to test loading times.
+
+* occ_test.obj
+Has no UV. Exported from LightWave with no vt entries and the second value in each vertex empty.
+
+* zbrush_huge.obj
+It's a huge model exported from zbrush with a million faces. It shouldn't take more than 20 or 30 seconds to load.

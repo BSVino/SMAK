@@ -1,0 +1,18 @@
+newmtl Material2
+Ka 0.352941 0.352941 0.352941
+Kd 0.486275 0.501961 0.8
+Ks 0.917647 1 0
+Ns 127
+map_Kd C:/svn/cf/trunk/content/source/models/checker.png
+newmtl Material1
+Ka 0.8 0.8 0.8
+Kd 0.796078 0.505882 0.509804
+Ks 0 0 0
+Ns 127
+map_Kd C:/svn/cf/trunk/content/source/models/props/hangar_ring/metal.png
+newmtl Material3
+Ka 0.8 0.8 0.8
+Kd 0.8 0.8 0.8
+Ks 0 0 0
+Ns 127
+map_Kd C:/svn/cf/trunk/content/source/models/props/hangar_ring/thick_pipe.png

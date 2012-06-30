@@ -1,0 +1,14 @@
+#!/bin/bash
+
+sudo apt-get install git-core cmake libfreetype6-dev libglfw-dev libxml2-dev libxrandr-dev
+mkdir ../ext-deps
+cd ../ext-deps
+git clone https://github.com/BSVino/EASTL.git #(Or https://github.com/paulhodge/EASTL.git if my patch gets merged)
+git clone https://github.com/BSVino/fcolladaCE.git
+( cd fcolladaCE && cmake . && make )
+git clone https://github.com/BSVino/glfw.git
+( cd glfw && cmake . && make )
+git clone https://github.com/skaslev/gl3w.git
+( cd gl3w && ./gl3w_gen.py )
+git clone https://github.com/BSVino/ftgl-gl3.git
+(cd ftgl-gl3 && cmake -DGL3W_INCLUDE_DIR=`pwd`/../gl3w/include/ . && make )
