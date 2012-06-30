@@ -561,64 +561,103 @@ void CMaterialEditor::RemoveNormalCallback(const tstring& sArgs)
 void CMaterialEditor::SetAmbientRedCallback(const tstring& sArgs)
 {
 	m_pMaterial->m_vecAmbient.x = m_hAmbientRedSelector->GetSelectionValue();
+
+	CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[m_iMaterial];
+	hMaterial->SetParameter("Ambient", m_pMaterial->m_vecAmbient);
 }
 
 void CMaterialEditor::SetAmbientGreenCallback(const tstring& sArgs)
 {
 	m_pMaterial->m_vecAmbient.y = m_hAmbientGreenSelector->GetSelectionValue();
+
+	CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[m_iMaterial];
+	hMaterial->SetParameter("Ambient", m_pMaterial->m_vecAmbient);
 }
 
 void CMaterialEditor::SetAmbientBlueCallback(const tstring& sArgs)
 {
 	m_pMaterial->m_vecAmbient.z = m_hAmbientBlueSelector->GetSelectionValue();
+
+	CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[m_iMaterial];
+	hMaterial->SetParameter("Ambient", m_pMaterial->m_vecAmbient);
 }
 
 void CMaterialEditor::SetDiffuseRedCallback(const tstring& sArgs)
 {
 	m_pMaterial->m_vecDiffuse.x = m_hDiffuseRedSelector->GetSelectionValue();
+
+	CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[m_iMaterial];
+	hMaterial->SetParameter("Diffuse", m_pMaterial->m_vecDiffuse);
 }
 
 void CMaterialEditor::SetDiffuseGreenCallback(const tstring& sArgs)
 {
 	m_pMaterial->m_vecDiffuse.y = m_hDiffuseGreenSelector->GetSelectionValue();
+
+	CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[m_iMaterial];
+	hMaterial->SetParameter("Diffuse", m_pMaterial->m_vecDiffuse);
 }
 
 void CMaterialEditor::SetDiffuseBlueCallback(const tstring& sArgs)
 {
 	m_pMaterial->m_vecDiffuse.z = m_hDiffuseBlueSelector->GetSelectionValue();
+
+	CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[m_iMaterial];
+	hMaterial->SetParameter("Diffuse", m_pMaterial->m_vecDiffuse);
 }
 
 void CMaterialEditor::SetSpecularRedCallback(const tstring& sArgs)
 {
 	m_pMaterial->m_vecSpecular.x = m_hSpecularRedSelector->GetSelectionValue();
+
+	CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[m_iMaterial];
+	hMaterial->SetParameter("Specular", m_pMaterial->m_vecSpecular);
 }
 
 void CMaterialEditor::SetSpecularGreenCallback(const tstring& sArgs)
 {
 	m_pMaterial->m_vecSpecular.y = m_hSpecularGreenSelector->GetSelectionValue();
+
+	CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[m_iMaterial];
+	hMaterial->SetParameter("Specular", m_pMaterial->m_vecSpecular);
 }
 
 void CMaterialEditor::SetSpecularBlueCallback(const tstring& sArgs)
 {
 	m_pMaterial->m_vecSpecular.z = m_hSpecularBlueSelector->GetSelectionValue();
+
+	CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[m_iMaterial];
+	hMaterial->SetParameter("Specular", m_pMaterial->m_vecSpecular);
 }
 
 void CMaterialEditor::SetEmissiveRedCallback(const tstring& sArgs)
 {
 	m_pMaterial->m_vecEmissive.x = m_hEmissiveRedSelector->GetSelectionValue();
+
+	CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[m_iMaterial];
+	hMaterial->SetParameter("Emissive", m_pMaterial->m_vecEmissive);
 }
 
 void CMaterialEditor::SetEmissiveGreenCallback(const tstring& sArgs)
 {
 	m_pMaterial->m_vecEmissive.y = m_hEmissiveGreenSelector->GetSelectionValue();
+
+	CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[m_iMaterial];
+	hMaterial->SetParameter("Emissive", m_pMaterial->m_vecEmissive);
 }
 
 void CMaterialEditor::SetEmissiveBlueCallback(const tstring& sArgs)
 {
 	m_pMaterial->m_vecEmissive.z = m_hEmissiveBlueSelector->GetSelectionValue();
+
+	CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[m_iMaterial];
+	hMaterial->SetParameter("Emissive", m_pMaterial->m_vecEmissive);
 }
 
 void CMaterialEditor::SetShininessCallback(const tstring& sArgs)
 {
 	m_pMaterial->m_flShininess = m_hShininessSelector->GetSelectionValue();
+
+	CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[m_iMaterial];
+	hMaterial->SetParameter("Shininess", m_pMaterial->m_flShininess);
 }

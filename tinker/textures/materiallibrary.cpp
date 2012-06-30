@@ -241,7 +241,7 @@ size_t CMaterial::FindParameter(const tstring& sParameterName, bool bCreate)
 
 void CMaterial::SetParameter(const tstring& sParameterName, const CTextureHandle& hTexture)
 {
-	CShader* pShader = CShaderLibrary::GetShader(m_sShader);
+	CShader* pShader = m_pShader;
 	TAssert(pShader);
 	if (!pShader)
 		return;
@@ -271,6 +271,44 @@ void CMaterial::SetParameter(const tstring& sParameterName, const CTextureHandle
 				m_ahTextures[k] = hTexture;
 		}
 	}
+}
+
+void CMaterial::SetParameter(const tstring& sParameterName, const tstring& sValue)
+{
+	CShader* pShader = m_pShader;
+	TAssert(pShader);
+	if (!pShader)
+		return;
+
+	size_t iParameter = FindParameter(sParameterName, true);
+
+	CMaterial::CParameter& oPar = m_aParameters[iParameter];
+
+	oPar.SetValue(sValue, pShader);
+
+	if (!oPar.m_pShaderParameter)
+	{
+		auto it = pShader->m_aParameters.find(oPar.m_sName);
+		TAssert(it != pShader->m_aParameters.end());
+		if (it == pShader->m_aParameters.end())
+		{
+			TError("Invalid parameter name " + oPar.m_sName + " in material " + m_sFile + "\n");
+			return;
+		}
+
+		CShader::CParameter* pShaderPar = &it->second;
+		oPar.m_pShaderParameter = pShaderPar;
+	}
+}
+
+void CMaterial::SetParameter(const tstring& sParameterName, const Vector& vecValue)
+{
+	SetParameter(sParameterName, sprintf("%f %f %f", vecValue.x, vecValue.y, vecValue.z));
+}
+
+void CMaterial::SetParameter(const tstring& sParameterName, float flValue)
+{
+	SetParameter(sParameterName, sprintf("%f", flValue));
 }
 
 void CMaterial::FillParameter(size_t iParameter, const tstring& sData, class CShader* pShader)

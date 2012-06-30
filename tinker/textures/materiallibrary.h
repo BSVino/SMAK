@@ -51,6 +51,9 @@ public:
 
 	size_t			FindParameter(const tstring& sParameterName, bool bCreate = false);
 	void			SetParameter(const tstring& sParameterName, const CTextureHandle& hTexture);
+	void			SetParameter(const tstring& sParameterName, const tstring& sValue);
+	void			SetParameter(const tstring& sParameterName, const Vector& vecValue);
+	void			SetParameter(const tstring& sParameterName, float flValue);
 	void			FillParameter(size_t iParameter, const tstring& sData, class CShader* pShader=nullptr);
 
 public:

@@ -1,7 +1,6 @@
 uniform vec4 vecColor;
 uniform vec3 vecLightDirection;
 
-uniform vec3 clrGlobalAmbient;
 uniform vec3 clrMaterialAmbient;
 uniform vec3 clrMaterialDiffuse;
 uniform vec3 clrMaterialEmissive;
@@ -38,9 +37,9 @@ void main()
 
 	vecCameraDirection = -normalize(vec3(vecUnprojected));
 	vecLocalLightDirection = -vec3(mView * mGlobal * vec4(vecLightDirection, 0.0));
-	vecLocalLightHalf = (vecCameraDirection + vecLocalLightDirection)/2.0;
+	vecLocalLightHalf = vecCameraDirection + vecLocalLightDirection;
 
-	clrAmbientLight = clrMaterialEmissive + clrMaterialAmbient * clrGlobalAmbient + clrLightAmbient * clrMaterialAmbient;
+	clrAmbientLight = clrMaterialEmissive + clrLightAmbient * clrMaterialAmbient;
 	clrDiffuseLight = clrLightDiffuse * clrMaterialDiffuse;
 	clrSpecularLight = clrLightSpecular * clrMaterialSpecular;
 

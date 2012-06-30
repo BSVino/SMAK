@@ -15,7 +15,10 @@ uniform float flAlpha;
 uniform bool bLight;
 uniform bool bShadeBottoms;
 uniform float flRimLight;
+uniform vec3 clrMaterialAmbient;
 uniform vec3 clrMaterialDiffuse;
+uniform vec3 clrMaterialEmissive;
+uniform vec3 clrMaterialSpecular;
 uniform float flMaterialShininess;
 
 in vec3 vecCameraDirection;
@@ -95,8 +98,8 @@ void main()
 			// If we are not in normal map mode, vecFragmentNormal is just a normal normal
 			vecTranslatedNormal = (mView * mGlobal * vec4(vecFragmentNormalized, 0.0)).xyz;
 
-		float flLightStrength = clamp(dot(vecLocalLightDirection, vecTranslatedNormal), 0.0, 1.0);
-		float flNormalDotHalfVector = max(0.0, dot(vecFragmentNormalized, vecLightHalfVectorNormalized));
+		float flLightStrength = clamp(dot(vecLightVectorNormalized, vecTranslatedNormal), 0.0, 1.0);
+		float flNormalDotHalfVector = max(0.0, dot(vecTranslatedNormal, vecLightHalfVectorNormalized));
 		float flPowerFactor = pow(flNormalDotHalfVector, flMaterialShininess);
 		clrLight = clrAmbientLight +
 				clrDiffuseLight * flLightStrength +
@@ -104,6 +107,7 @@ void main()
 	}
 	else
 	{
+		vec3 clrDiffuseNoLight;
 		if (bShadeBottoms)
 		{
 			if (bNormal || bNormal2)
@@ -115,19 +119,29 @@ void main()
 				vecTranslatedNormal = normalize((mView * mGlobal * vec4(vecFragmentNormalized, 0.0)).xyz);
 
 			float flDot = dot(vecTranslatedNormal, vec3(0, 1, 0));
-			clrLight = vec3(1.0, 1.0, 1.0) * (flDot * 0.5) + vec3(0.45, 0.45, 0.45);
+			clrDiffuseNoLight = vec3(1.0, 1.0, 1.0) * (flDot * 0.5) + vec3(0.45, 0.45, 0.45);
 		}
 		else
-			clrLight = vec3(1.0, 1.0, 1.0);
+			clrDiffuseNoLight = vec3(1.0, 1.0, 1.0);
 
-		clrLight *= clrMaterialDiffuse;
+		vecLightHalfVectorNormalized = normalize(vecCameraDirection + vec3(0, 1, 0));
+		float flNormalDotHalfVector = max(0.0, dot(vecTranslatedNormal, vecLightHalfVectorNormalized));
+		float flPowerFactor = pow(flNormalDotHalfVector, flMaterialShininess);
+
+		clrLight = clrMaterialEmissive + clrMaterialAmbient +
+				clrMaterialDiffuse * clrDiffuseNoLight +
+				clrMaterialSpecular * flPowerFactor;
 	}
 
 	// Add a rim light.
 	if (flRimLight > 0.0)
-		clrLight += RemapValClamped(Lerp(1-dot(vecFragmentNormalized, vecCameraDirectionNormalized), 0.8), 0.6, 1.0, 0.0, flRimLight);
+		clrLight += RemapValClamped(Lerp(1-dot(vecTranslatedNormal, vecCameraDirectionNormalized), 0.8), 0.6, 1.0, 0.0, flRimLight);
 
 	vecOutputColor = clrDiffuseColor;
 	vecOutputColor.rgb *= clrLight;// * clrAO * clrCAO;
 	vecOutputColor.a = clrDiffuseColor.a * flAlpha;
+
+	// A bit of randomness to get rid of the banding.
+	float flFragmentRand = Rand(vecFragmentTexCoord0)/250.0;
+	vecOutputColor += flFragmentRand;
 }
