@@ -79,7 +79,7 @@ namespace glgui
 		virtual bool			IsHighlighted() { return m_bHighlight; };
 
 		void					SetScissoring(bool b) { m_bScissoring = b; };
-		bool					IsScissoring() const { return m_bScissoring; };
+		bool					IsScissoring() const;
 
 		FRect					GetControlBounds() const { return m_rControlBounds; };
 		FRect					GetControlOffset() const { return m_rControlOffset; };

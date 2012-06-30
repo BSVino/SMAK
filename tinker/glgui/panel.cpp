@@ -550,6 +550,14 @@ void CPanel::Think()
 	}
 }
 
+bool CPanel::IsScissoring() const
+{
+	if (RootPanel()->IsDrawingDraggable())
+		return false;
+
+	return m_bScissoring;
+}
+
 void CPanel::SetVerticalScrollBarEnabled(bool b)
 {
 	if (m_hVerticalScrollBar && b)

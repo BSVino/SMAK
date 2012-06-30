@@ -67,6 +67,7 @@ namespace glgui
 		double						GetTime() { return m_flTime; };
 
 		bool						IsGarbageCollecting() const { return m_bGarbageCollecting; }
+		bool						IsDrawingDraggable() const { return m_bDrawingDraggable; }
 
 		static CRootPanel*			Get();
 
@@ -98,6 +99,7 @@ namespace glgui
 
 		bool						m_bUseLighting;
 		bool						m_bGarbageCollecting;
+		bool						m_bDrawingDraggable;
 
 		::CRenderingContext*		m_pRenderingContext;
 	};

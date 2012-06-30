@@ -43,6 +43,7 @@ CRootPanel::CRootPanel() :
 
 	m_bUseLighting = true;
 	m_bGarbageCollecting = false;
+	m_bDrawingDraggable = false;
 
 	s_bRootPanelValid = true;
 
@@ -129,12 +130,16 @@ void CRootPanel::Paint(float x, float y, float w, float h)
 
 	if (m_pDragging)
 	{
+		m_bDrawingDraggable = true;
+
 		int mx, my;
 		CRootPanel::GetFullscreenMousePos(mx, my);
 
 		float iWidth = m_pDragging->GetCurrentDraggable()->GetWidth();
 		float iHeight = m_pDragging->GetCurrentDraggable()->GetHeight();
 		m_pDragging->GetCurrentDraggable()->Paint(mx-iWidth/2, my-iHeight/2, iWidth, iHeight, true);
+
+		m_bDrawingDraggable = false;
 	}
 
 	m_pRenderingContext = nullptr;

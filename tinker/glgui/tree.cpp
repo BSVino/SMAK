@@ -43,6 +43,7 @@ CTree::CTree(const CMaterialHandle& hArrowMaterial, const CMaterialHandle& hEdit
 	m_pDroppedListener = NULL;
 
 	m_bMouseDown = false;
+	m_bDroppable = false;
 
 	CRootPanel::Get()->AddDroppable(this);
 
@@ -469,6 +470,9 @@ void CTreeNode::Paint(float x, float y, float w, float h, bool bFloating)
 	if (!IsVisible())
 		return;
 
+	if (bFloating)
+		CBaseControl::PaintRect(x, y, w, h, Color(0, 0, 0, 50));
+
 	if (m_hTree->m_hArrowMaterial.IsValid() && m_ahNodes.size())
 		m_hExpandButton->Paint();
 
@@ -482,7 +486,7 @@ void CTreeNode::Paint(float x, float y, float w, float h, bool bFloating)
 		PaintTexture(m_hIconMaterial, x+12, y, flIconSize, flIconSize);
 	}
 
-	m_hLabel->Paint();
+	m_hLabel->Paint(x + m_hLabel->GetLeft(), y + m_hLabel->GetTop());
 
 	if (m_hVisibilityButton)
 		m_hVisibilityButton->Paint();

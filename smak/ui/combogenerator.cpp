@@ -111,12 +111,14 @@ CComboGeneratorPanel::CComboGeneratorPanel(CConversionScene* pScene)
 	m_hLoRes = AddControl(new CTree(SMAKWindow()->GetSMAKRenderer()->GetArrowTexture(), SMAKWindow()->GetSMAKRenderer()->GetEditTexture(), SMAKWindow()->GetSMAKRenderer()->GetVisibilityTexture()));
 	m_hLoRes->SetBackgroundColor(g_clrBox);
 	m_hLoRes->SetDroppedListener(this, DroppedLoResMesh);
+	m_hLoRes->SetDroppable(true);
 
 	m_hHiResLabel = AddControl(new CLabel(0, 0, 32, 32, "High Resolution Meshes"));
 
 	m_hHiRes = AddControl(new CTree(SMAKWindow()->GetSMAKRenderer()->GetArrowTexture(), SMAKWindow()->GetSMAKRenderer()->GetEditTexture(), SMAKWindow()->GetSMAKRenderer()->GetVisibilityTexture()));
 	m_hHiRes->SetBackgroundColor(g_clrBox);
 	m_hHiRes->SetDroppedListener(this, DroppedHiResMesh);
+	m_hHiRes->SetDroppable(true);
 
 	m_hAddLoRes = AddControl(new CButton(0, 0, 100, 100, "Add"));
 	m_hAddLoRes->SetClickedListener(this, AddLoRes);
@@ -752,7 +754,8 @@ void CComboGeneratorPanel::DroppedHiResMeshCallback(const tstring& sArgs)
 
 	m_apHiResMeshes.push_back(pMeshInstance);
 
-	m_hMeshInstancePicker->Close();
+	if (m_hMeshInstancePicker.Get())
+		m_hMeshInstancePicker->Close();
 
 	Layout();
 }

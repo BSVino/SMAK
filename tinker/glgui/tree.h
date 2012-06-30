@@ -166,7 +166,8 @@ namespace glgui
 		virtual void						SetGrabbale(bool bGrabbable) {};
 		virtual bool						IsGrabbale() { return true; };
 
-		virtual bool						CanDropHere(IDraggable*) { return true; };
+		virtual bool						CanDropHere(IDraggable*) { return m_bDroppable; };
+		virtual void						SetDroppable(bool bDrop) { m_bDroppable = bDrop; };
 
 		virtual bool						IsInfinite() { return true; };
 		virtual bool						IsVisible() { return BaseClass::IsVisible(); };
@@ -197,6 +198,8 @@ namespace glgui
 		bool								m_bMouseDown;
 		int									m_iMouseDownX;
 		int									m_iMouseDownY;
+
+		bool								m_bDroppable;
 
 		CControl<CTreeNode>					m_hDragging;
 		int									m_iAcceptsDragType;
