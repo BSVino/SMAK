@@ -1,0 +1,3 @@
+Name: brightpass
+Vertex: pass
+Fragment: brightpass

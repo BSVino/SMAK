@@ -1,0 +1,3 @@
+Name: flat_shadow
+Vertex: flat_shadow
+Fragment: flat_shadow

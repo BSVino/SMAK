@@ -1,0 +1,5 @@
+Shader: model
+{
+	Blend: additive
+	DiffuseTexture: lighthalo.png
+}

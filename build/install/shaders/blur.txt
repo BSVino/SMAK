@@ -1,0 +1,3 @@
+Name: blur
+Vertex: pass
+Fragment: blur

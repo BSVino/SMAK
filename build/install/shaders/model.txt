@@ -1,0 +1,109 @@
+Name: model
+Vertex: pass
+Fragment: model
+
+Parameter: DiffuseTexture
+{
+	Uniform: bDiffuse
+	{
+		Value: yes
+	}
+	Uniform: iDiffuse
+	{
+		Texture: [value]
+	}
+}
+
+Parameter: Ambient
+{
+	Uniform: clrMaterialAmbient
+	{
+		Value: [value]
+	}
+}
+
+Parameter: Diffuse
+{
+	Uniform: clrMaterialDiffuse
+	{
+		Value: [value]
+	}
+}
+
+Parameter: Emissive
+{
+	Uniform: clrMaterialEmissive
+	{
+		Value: [value]
+	}
+}
+
+Parameter: Specular
+{
+	Uniform: clrMaterialSpecular
+	{
+		Value: [value]
+	}
+}
+
+Parameter: Shininess
+{
+	Uniform: flMaterialShininess
+	{
+		Value: [value]
+	}
+}
+
+Parameter: Blend
+{
+	Blend: [value]
+}
+
+Parameter: AmbientOcclusion
+{
+	Uniform: bAO
+	{
+		Value: yes
+	}
+	Uniform: iAO
+	{
+		Texture: [value]
+	}
+}
+
+Parameter: Normal
+{
+	Uniform: bNormal
+	{
+		Value: yes
+	}
+	Uniform: iNormal
+	{
+		Texture: [value]
+	}
+}
+
+Parameter: Normal2
+{
+	Uniform: bNormal2
+	{
+		Value: yes
+	}
+	Uniform: iNormal2
+	{
+		Texture: [value]
+	}
+}
+
+Defaults
+{
+	bDiffuse: no
+	bAO: no
+	bNormal: no
+	clrMaterialAmbient: 0 0 0
+	clrMaterialDiffuse: 1 1 1
+	clrMaterialEmissive: 0 0 0
+	clrMaterialSpecular: 1 1 1
+	flMaterialShininess: 0.5
+	flAlpha: 1
+}

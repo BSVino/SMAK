@@ -1,0 +1,25 @@
+Name: gui
+Vertex: gui
+Fragment: gui
+
+Parameter: Diffuse
+{
+	Uniform: bDiffuse
+	{
+		Value: yes
+	}
+	Uniform: iDiffuse
+	{
+		Texture: [value]
+	}
+}
+
+Parameter: Blend
+{
+	Blend: [value]
+}
+
+Defaults
+{
+	bDiffuse: no
+}

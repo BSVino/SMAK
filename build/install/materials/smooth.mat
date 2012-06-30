@@ -1,0 +1,5 @@
+Shader: gui
+{
+	Blend: alpha
+	Diffuse: smooth.png
+}
