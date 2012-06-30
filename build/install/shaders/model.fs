@@ -74,11 +74,9 @@ void main()
 		}
 	}
 
+	vec3 clrAOColor = vec3(1.0, 1.0, 1.0);
 	if (bAO)
-	{
-		vec4 clrAOColor = texture(iAO, vecFragmentTexCoord0);
-		clrDiffuseColor.xyz *= clrAOColor.xyz;
-	}
+		clrAOColor = texture(iAO, vecFragmentTexCoord0).xyz;
 
 	vec3 vecFragmentNormalized = normalize(vecFragmentNormal);
 	vec3 vecLightVectorNormalized = normalize(vecLocalLightDirection);
@@ -101,8 +99,8 @@ void main()
 		float flLightStrength = clamp(dot(vecLightVectorNormalized, vecTranslatedNormal), 0.0, 1.0);
 		float flNormalDotHalfVector = max(0.0, dot(vecTranslatedNormal, vecLightHalfVectorNormalized));
 		float flPowerFactor = pow(flNormalDotHalfVector, flMaterialShininess);
-		clrLight = clrAmbientLight +
-				clrDiffuseLight * flLightStrength +
+		clrLight = clrMaterialEmissive + (clrAmbientLight +
+				clrDiffuseLight * flLightStrength) * clrAOColor +
 				clrSpecularLight * flPowerFactor;
 	}
 	else
@@ -128,8 +126,8 @@ void main()
 		float flNormalDotHalfVector = max(0.0, dot(vecTranslatedNormal, vecLightHalfVectorNormalized));
 		float flPowerFactor = pow(flNormalDotHalfVector, flMaterialShininess);
 
-		clrLight = clrMaterialEmissive + clrMaterialAmbient +
-				clrMaterialDiffuse * clrDiffuseNoLight +
+		clrLight = clrMaterialEmissive + (clrMaterialAmbient +
+				clrMaterialDiffuse * clrDiffuseNoLight) * clrAOColor +
 				clrMaterialSpecular * flPowerFactor;
 	}
 

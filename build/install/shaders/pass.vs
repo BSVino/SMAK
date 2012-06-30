@@ -39,7 +39,7 @@ void main()
 	vecLocalLightDirection = -vec3(mView * mGlobal * vec4(vecLightDirection, 0.0));
 	vecLocalLightHalf = vecCameraDirection + vecLocalLightDirection;
 
-	clrAmbientLight = clrMaterialEmissive + clrLightAmbient * clrMaterialAmbient;
+	clrAmbientLight = clrLightAmbient * clrMaterialAmbient;
 	clrDiffuseLight = clrLightDiffuse * clrMaterialDiffuse;
 	clrSpecularLight = clrLightSpecular * clrMaterialSpecular;
 
