@@ -4,6 +4,8 @@
 
 #define tsampler2D sampler2D
 
+#define PI 3.14159265
+
 vec4 ttexture(tsampler2D iSampler, vec2 vecCoordinates)
 {
 	return texture(iSampler, vecCoordinates);
@@ -95,3 +97,80 @@ float AngleDifference(float a, float b)
 float Rand(vec2 co) {
 	return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453);
 }
+
+// From: http://en.wikipedia.org/wiki/HSL_and_HSV#Converting_to_RGB
+vec3 GetRGBFromHSL(float flHue, float flSaturation, float flLightness)
+{
+	float flChroma = (1.0 - abs(2.0 * flLightness - 1.0)) * flSaturation;
+	float flX = flChroma * (1.0 - abs(mod(flHue, 2.0) - 1.0));
+
+	float flR1, flG1, flB1;
+	if (flHue < 1.0)
+	{
+		flR1 = flChroma;
+		flG1 = flX;
+		flB1 = 0.0;
+	}
+	else if (flHue < 2.0)
+	{
+		flR1 = flX;
+		flG1 = flChroma;
+		flB1 = 0.0;
+	}
+	else if (flHue < 3.0)
+	{
+		flR1 = 0.0;
+		flG1 = flChroma;
+		flB1 = flX;
+	}
+	else if (flHue < 4.0)
+	{
+		flR1 = 0.0;
+		flG1 = flX;
+		flB1 = flChroma;
+	}
+	else if (flHue < 5.0)
+	{
+		flR1 = flX;
+		flG1 = 0.0;
+		flB1 = flChroma;
+	}
+	else
+	{
+		flR1 = flChroma;
+		flG1 = 0.0;
+		flB1 = flX;
+	}
+
+	float flM = flLightness - flChroma/2.0;
+
+	return vec3(flR1+flM, flG1+flM, flB1+flM);
+}
+
+// From: http://en.wikipedia.org/wiki/HSL_and_HSV#General_approach
+vec3 GetHSLFromRGB(vec3 clrRGB)
+{
+	float M = max(max(clrRGB.r, clrRGB.g), clrRGB.b);
+	float m = min(min(clrRGB.r, clrRGB.g), clrRGB.b);
+
+	float flChroma = M - m;
+
+	float flHue;
+	if (flChroma == 0)
+		flHue = 0;
+	else if (clrRGB.r > clrRGB.g && clrRGB.r > clrRGB.b)
+		flHue = mod((clrRGB.g - clrRGB.b)/flChroma, 6.0) * 60;
+	else if (clrRGB.g > clrRGB.r && clrRGB.g > clrRGB.b)
+		flHue = ((clrRGB.b - clrRGB.r)/flChroma + 2.0) * 60;
+	else if (clrRGB.b > clrRGB.r && clrRGB.b > clrRGB.g)
+		flHue = ((clrRGB.r - clrRGB.g)/flChroma + 4.0) * 60;
+
+	float flLightness = (M + m)/2.0;
+
+	float flSaturation = 0;
+	if (flChroma > 0)
+		flSaturation = flChroma / (1.0 - abs(2.0*flLightness - 1));
+
+	return vec3(flHue, flSaturation, flLightness);
+}
+

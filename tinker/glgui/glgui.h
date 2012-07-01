@@ -36,6 +36,8 @@ namespace glgui
 	class CBaseControl;
 	class CButton;
 	class CCheckBox;
+	class CColorPicker;
+	class CColorPickerButton;
 	class CDroppablePanel;
 	class CLabel;
 	class CMenu;

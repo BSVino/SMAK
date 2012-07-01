@@ -19,6 +19,7 @@ GNU General Public License for more details.
 #include <glgui/rootpanel.h>
 #include <glgui/tree.h>
 #include <glgui/filedialog.h>
+#include <glgui/colorpicker.h>
 #include <textures/texturelibrary.h>
 #include <textures/materiallibrary.h>
 
@@ -251,48 +252,20 @@ CMaterialEditor::CMaterialEditor(CConversionMaterial* pMaterial, CControl<CScene
 	m_hNormalRemove->SetClickedListener(this, RemoveNormal);
 
 	m_hAmbientLabel = AddControl(new CLabel(0, 0, 1, 1, "Ambient: "));
-	m_hAmbientRedSelector = AddControl(new CScrollSelector<float>());
-	SetupSelector(m_hAmbientRedSelector, 1);
-	m_hAmbientRedSelector->SetSelectedListener(this, SetAmbientRed);
-	m_hAmbientGreenSelector = AddControl(new CScrollSelector<float>());
-	SetupSelector(m_hAmbientGreenSelector, 1);
-	m_hAmbientGreenSelector->SetSelectedListener(this, SetAmbientGreen);
-	m_hAmbientBlueSelector = AddControl(new CScrollSelector<float>());
-	SetupSelector(m_hAmbientBlueSelector, 1);
-	m_hAmbientBlueSelector->SetSelectedListener(this, SetAmbientBlue);
+	m_hAmbientColorPicker = AddControl(new CColorPickerButton());
+	m_hAmbientColorPicker->SetChangedListener(this, SetAmbient);
 
 	m_hDiffuseSelectorLabel = AddControl(new CLabel(0, 0, 1, 1, "Diffuse: "));
-	m_hDiffuseRedSelector = AddControl(new CScrollSelector<float>());
-	SetupSelector(m_hDiffuseRedSelector, 1);
-	m_hDiffuseRedSelector->SetSelectedListener(this, SetDiffuseRed);
-	m_hDiffuseGreenSelector = AddControl(new CScrollSelector<float>());
-	SetupSelector(m_hDiffuseGreenSelector, 1);
-	m_hDiffuseGreenSelector->SetSelectedListener(this, SetDiffuseGreen);
-	m_hDiffuseBlueSelector = AddControl(new CScrollSelector<float>());
-	SetupSelector(m_hDiffuseBlueSelector, 1);
-	m_hDiffuseBlueSelector->SetSelectedListener(this, SetDiffuseBlue);
+	m_hDiffuseColorPicker = AddControl(new CColorPickerButton());
+	m_hDiffuseColorPicker->SetChangedListener(this, SetDiffuse);
 
 	m_hSpecularLabel = AddControl(new CLabel(0, 0, 1, 1, "Specular: "));
-	m_hSpecularRedSelector = AddControl(new CScrollSelector<float>());
-	SetupSelector(m_hSpecularRedSelector, 1);
-	m_hSpecularRedSelector->SetSelectedListener(this, SetSpecularRed);
-	m_hSpecularGreenSelector = AddControl(new CScrollSelector<float>());
-	SetupSelector(m_hSpecularGreenSelector, 1);
-	m_hSpecularGreenSelector->SetSelectedListener(this, SetSpecularGreen);
-	m_hSpecularBlueSelector = AddControl(new CScrollSelector<float>());
-	SetupSelector(m_hSpecularBlueSelector, 1);
-	m_hSpecularBlueSelector->SetSelectedListener(this, SetSpecularBlue);
+	m_hSpecularColorPicker = AddControl(new CColorPickerButton());
+	m_hSpecularColorPicker->SetChangedListener(this, SetSpecular);
 
 	m_hEmissiveLabel = AddControl(new CLabel(0, 0, 1, 1, "Emissive: "));
-	m_hEmissiveRedSelector = AddControl(new CScrollSelector<float>());
-	SetupSelector(m_hEmissiveRedSelector, 1);
-	m_hEmissiveRedSelector->SetSelectedListener(this, SetEmissiveRed);
-	m_hEmissiveGreenSelector = AddControl(new CScrollSelector<float>());
-	SetupSelector(m_hEmissiveGreenSelector, 1);
-	m_hEmissiveGreenSelector->SetSelectedListener(this, SetEmissiveGreen);
-	m_hEmissiveBlueSelector = AddControl(new CScrollSelector<float>());
-	SetupSelector(m_hEmissiveBlueSelector, 1);
-	m_hEmissiveBlueSelector->SetSelectedListener(this, SetEmissiveBlue);
+	m_hEmissiveColorPicker = AddControl(new CColorPickerButton());
+	m_hEmissiveColorPicker->SetChangedListener(this, SetEmissive);
 
 	m_hShininessLabel = AddControl(new CLabel(0, 0, 1, 1, "Shininess: "));
 	m_hShininessSelector = AddControl(new CScrollSelector<float>());
@@ -383,97 +356,47 @@ void CMaterialEditor::Layout()
 
 	flHeight += flControlHeight;
 
-	float flAmbientHeight = flHeight;
+	float flLabelHeight = flHeight + 10;
 
-	m_hAmbientLabel->SetPos(10, flHeight);
+	m_hAmbientLabel->SetPos(10, flLabelHeight);
 	m_hAmbientLabel->EnsureTextFits();
 
 	m_hAmbientLabel->GetPos(x, y);
 	float flAmbientRight = x + m_hAmbientLabel->GetWidth();
 
-	m_hAmbientRedSelector->SetPos(flAmbientRight, flHeight);
-	m_hAmbientRedSelector->SetSelection((int)(m_pMaterial->m_vecAmbient.x*20));
-	m_hAmbientRedSelector->SetRight(GetWidth()/2-5);
+	float flColorPickerHeight = flLabelHeight + m_hAmbientLabel->GetHeight()/2 - m_hAmbientColorPicker->GetHeight()/2;
 
-	flHeight += 20;
-	m_hAmbientGreenSelector->SetPos(flAmbientRight, flHeight);
-	m_hAmbientGreenSelector->SetSelection((int)(m_pMaterial->m_vecAmbient.y*20));
-	m_hAmbientGreenSelector->SetRight(GetWidth()/2-5);
+	m_hAmbientColorPicker->SetPos(flAmbientRight, flColorPickerHeight);
+	m_hAmbientColorPicker->SetColor(m_pMaterial->m_vecAmbient);
 
-	flHeight += 20;
-	m_hAmbientBlueSelector->SetPos(flAmbientRight, flHeight);
-	m_hAmbientBlueSelector->SetSelection((int)(m_pMaterial->m_vecAmbient.z*20));
-	m_hAmbientBlueSelector->SetRight(GetWidth()/2-5);
-
-	flHeight = flAmbientHeight;
-
-	m_hDiffuseSelectorLabel->SetPos(GetWidth()/2+5, flHeight);
+	m_hDiffuseSelectorLabel->SetPos(GetWidth()/4+5, flLabelHeight);
 	m_hDiffuseSelectorLabel->EnsureTextFits();
 
 	m_hDiffuseSelectorLabel->GetPos(x, y);
-	float flDiffuseSelectorX = x + m_hDiffuseSelectorLabel->GetWidth();
+	flDiffuseRight = x + m_hDiffuseSelectorLabel->GetWidth();
 
-	m_hDiffuseRedSelector->SetPos(flDiffuseSelectorX, flHeight);
-	m_hDiffuseRedSelector->SetSelection((int)(m_pMaterial->m_vecDiffuse.x*20));
-	m_hDiffuseRedSelector->SetRight(GetWidth()-10);
+	m_hDiffuseColorPicker->SetPos(flDiffuseRight, flColorPickerHeight);
+	m_hDiffuseColorPicker->SetColor(m_pMaterial->m_vecDiffuse);
 
-	flHeight += 20;
-	m_hDiffuseGreenSelector->SetPos(flDiffuseSelectorX, flHeight);
-	m_hDiffuseGreenSelector->SetSelection((int)(m_pMaterial->m_vecDiffuse.y*20));
-	m_hDiffuseGreenSelector->SetRight(GetWidth()-10);
-
-	flHeight += 20;
-	m_hDiffuseBlueSelector->SetPos(flDiffuseSelectorX, flHeight);
-	m_hDiffuseBlueSelector->SetSelection((int)(m_pMaterial->m_vecDiffuse.z*20));
-	m_hDiffuseBlueSelector->SetRight(GetWidth()-10);
-
-	flHeight += flControlHeight;
-
-	float flSpecularHeight = flHeight;
-
-	m_hSpecularLabel->SetPos(10, flHeight);
+	m_hSpecularLabel->SetPos(GetWidth()/2+5, flLabelHeight);
 	m_hSpecularLabel->EnsureTextFits();
 
 	m_hSpecularLabel->GetPos(x, y);
 	float flSpecularRight = x + m_hSpecularLabel->GetWidth();
 
-	m_hSpecularRedSelector->SetPos(flSpecularRight, flHeight);
-	m_hSpecularRedSelector->SetSelection((int)(m_pMaterial->m_vecSpecular.x*20));
-	m_hSpecularRedSelector->SetRight(GetWidth()/2-5);
+	m_hSpecularColorPicker->SetPos(flSpecularRight, flColorPickerHeight);
+	m_hSpecularColorPicker->SetColor(m_pMaterial->m_vecSpecular);
 
-	flHeight += 20;
-	m_hSpecularGreenSelector->SetPos(flSpecularRight, flHeight);
-	m_hSpecularGreenSelector->SetSelection((int)(m_pMaterial->m_vecSpecular.y*20));
-	m_hSpecularGreenSelector->SetRight(GetWidth()/2-5);
-
-	flHeight += 20;
-	m_hSpecularBlueSelector->SetPos(flSpecularRight, flHeight);
-	m_hSpecularBlueSelector->SetSelection((int)(m_pMaterial->m_vecSpecular.z*20));
-	m_hSpecularBlueSelector->SetRight(GetWidth()/2-5);
-
-	flHeight = flSpecularHeight;
-
-	m_hEmissiveLabel->SetPos(GetWidth()/2+5, flHeight);
+	m_hEmissiveLabel->SetPos(GetWidth()*3/4+5, flLabelHeight);
 	m_hEmissiveLabel->EnsureTextFits();
 
 	m_hEmissiveLabel->GetPos(x, y);
 	float flEmissiveRight = x + m_hEmissiveLabel->GetWidth();
 
-	m_hEmissiveRedSelector->SetPos(flEmissiveRight, flHeight);
-	m_hEmissiveRedSelector->SetSelection((int)(m_pMaterial->m_vecEmissive.x*20));
-	m_hEmissiveRedSelector->SetRight(GetWidth()-10);
+	m_hEmissiveColorPicker->SetPos(flEmissiveRight, flColorPickerHeight);
+	m_hEmissiveColorPicker->SetColor(m_pMaterial->m_vecEmissive);
 
-	flHeight += 20;
-	m_hEmissiveGreenSelector->SetPos(flEmissiveRight, flHeight);
-	m_hEmissiveGreenSelector->SetSelection((int)(m_pMaterial->m_vecEmissive.y*20));
-	m_hEmissiveGreenSelector->SetRight(GetWidth()-10);
-
-	flHeight += 20;
-	m_hEmissiveBlueSelector->SetPos(flEmissiveRight, flHeight);
-	m_hEmissiveBlueSelector->SetSelection((int)(m_pMaterial->m_vecEmissive.z*20));
-	m_hEmissiveBlueSelector->SetRight(GetWidth()-10);
-
-	flHeight += flControlHeight;
+	flHeight += flControlHeight + 15;
 
 	m_hShininessLabel->SetPos(10, flHeight);
 	m_hShininessLabel->EnsureTextFits();
@@ -558,97 +481,33 @@ void CMaterialEditor::RemoveNormalCallback(const tstring& sArgs)
 	Layout();
 }
 
-void CMaterialEditor::SetAmbientRedCallback(const tstring& sArgs)
+void CMaterialEditor::SetAmbientCallback(const tstring& sArgs)
 {
-	m_pMaterial->m_vecAmbient.x = m_hAmbientRedSelector->GetSelectionValue();
+	m_pMaterial->m_vecAmbient = m_hAmbientColorPicker->GetColorVector();
 
 	CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[m_iMaterial];
 	hMaterial->SetParameter("Ambient", m_pMaterial->m_vecAmbient);
 }
 
-void CMaterialEditor::SetAmbientGreenCallback(const tstring& sArgs)
+void CMaterialEditor::SetDiffuseCallback(const tstring& sArgs)
 {
-	m_pMaterial->m_vecAmbient.y = m_hAmbientGreenSelector->GetSelectionValue();
-
-	CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[m_iMaterial];
-	hMaterial->SetParameter("Ambient", m_pMaterial->m_vecAmbient);
-}
-
-void CMaterialEditor::SetAmbientBlueCallback(const tstring& sArgs)
-{
-	m_pMaterial->m_vecAmbient.z = m_hAmbientBlueSelector->GetSelectionValue();
-
-	CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[m_iMaterial];
-	hMaterial->SetParameter("Ambient", m_pMaterial->m_vecAmbient);
-}
-
-void CMaterialEditor::SetDiffuseRedCallback(const tstring& sArgs)
-{
-	m_pMaterial->m_vecDiffuse.x = m_hDiffuseRedSelector->GetSelectionValue();
+	m_pMaterial->m_vecDiffuse = m_hDiffuseColorPicker->GetColorVector();
 
 	CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[m_iMaterial];
 	hMaterial->SetParameter("Diffuse", m_pMaterial->m_vecDiffuse);
 }
 
-void CMaterialEditor::SetDiffuseGreenCallback(const tstring& sArgs)
+void CMaterialEditor::SetSpecularCallback(const tstring& sArgs)
 {
-	m_pMaterial->m_vecDiffuse.y = m_hDiffuseGreenSelector->GetSelectionValue();
-
-	CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[m_iMaterial];
-	hMaterial->SetParameter("Diffuse", m_pMaterial->m_vecDiffuse);
-}
-
-void CMaterialEditor::SetDiffuseBlueCallback(const tstring& sArgs)
-{
-	m_pMaterial->m_vecDiffuse.z = m_hDiffuseBlueSelector->GetSelectionValue();
-
-	CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[m_iMaterial];
-	hMaterial->SetParameter("Diffuse", m_pMaterial->m_vecDiffuse);
-}
-
-void CMaterialEditor::SetSpecularRedCallback(const tstring& sArgs)
-{
-	m_pMaterial->m_vecSpecular.x = m_hSpecularRedSelector->GetSelectionValue();
+	m_pMaterial->m_vecSpecular = m_hSpecularColorPicker->GetColorVector();
 
 	CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[m_iMaterial];
 	hMaterial->SetParameter("Specular", m_pMaterial->m_vecSpecular);
 }
 
-void CMaterialEditor::SetSpecularGreenCallback(const tstring& sArgs)
+void CMaterialEditor::SetEmissiveCallback(const tstring& sArgs)
 {
-	m_pMaterial->m_vecSpecular.y = m_hSpecularGreenSelector->GetSelectionValue();
-
-	CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[m_iMaterial];
-	hMaterial->SetParameter("Specular", m_pMaterial->m_vecSpecular);
-}
-
-void CMaterialEditor::SetSpecularBlueCallback(const tstring& sArgs)
-{
-	m_pMaterial->m_vecSpecular.z = m_hSpecularBlueSelector->GetSelectionValue();
-
-	CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[m_iMaterial];
-	hMaterial->SetParameter("Specular", m_pMaterial->m_vecSpecular);
-}
-
-void CMaterialEditor::SetEmissiveRedCallback(const tstring& sArgs)
-{
-	m_pMaterial->m_vecEmissive.x = m_hEmissiveRedSelector->GetSelectionValue();
-
-	CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[m_iMaterial];
-	hMaterial->SetParameter("Emissive", m_pMaterial->m_vecEmissive);
-}
-
-void CMaterialEditor::SetEmissiveGreenCallback(const tstring& sArgs)
-{
-	m_pMaterial->m_vecEmissive.y = m_hEmissiveGreenSelector->GetSelectionValue();
-
-	CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[m_iMaterial];
-	hMaterial->SetParameter("Emissive", m_pMaterial->m_vecEmissive);
-}
-
-void CMaterialEditor::SetEmissiveBlueCallback(const tstring& sArgs)
-{
-	m_pMaterial->m_vecEmissive.z = m_hEmissiveBlueSelector->GetSelectionValue();
+	m_pMaterial->m_vecEmissive = m_hEmissiveColorPicker->GetColorVector();
 
 	CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[m_iMaterial];
 	hMaterial->SetParameter("Emissive", m_pMaterial->m_vecEmissive);
@@ -661,3 +520,17 @@ void CMaterialEditor::SetShininessCallback(const tstring& sArgs)
 	CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[m_iMaterial];
 	hMaterial->SetParameter("Shininess", m_pMaterial->m_flShininess);
 }
+
+void CMaterialEditor::SetVisible(bool bVisible)
+{
+	BaseClass::SetVisible(bVisible);
+
+	if (!bVisible)
+	{
+		m_hDiffuseColorPicker->Pop(true, true);
+		m_hAmbientColorPicker->Pop(true, true);
+		m_hEmissiveColorPicker->Pop(true, true);
+		m_hSpecularColorPicker->Pop(true, true);
+	}
+}
+

@@ -1,0 +1,3 @@
+Name: colorpicker
+Vertex: gui
+Fragment: colorpicker

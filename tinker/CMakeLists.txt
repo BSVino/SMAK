@@ -16,6 +16,7 @@ set (TINKER_GLGUI_SOURCES
 	glgui/basecontrol.cpp
 	glgui/button.cpp
 	glgui/checkbox.cpp
+	glgui/colorpicker.cpp
 	glgui/droppablepanel.cpp
 	glgui/filedialog.cpp
 	glgui/label.cpp

@@ -78,19 +78,13 @@ public:
 	EVENT_CALLBACK(CMaterialEditor, OpenNormal);
 	EVENT_CALLBACK(CMaterialEditor, RemoveDiffuse);
 	EVENT_CALLBACK(CMaterialEditor, RemoveNormal);
-	EVENT_CALLBACK(CMaterialEditor, SetAmbientRed);
-	EVENT_CALLBACK(CMaterialEditor, SetAmbientGreen);
-	EVENT_CALLBACK(CMaterialEditor, SetAmbientBlue);
-	EVENT_CALLBACK(CMaterialEditor, SetDiffuseRed);
-	EVENT_CALLBACK(CMaterialEditor, SetDiffuseGreen);
-	EVENT_CALLBACK(CMaterialEditor, SetDiffuseBlue);
-	EVENT_CALLBACK(CMaterialEditor, SetSpecularRed);
-	EVENT_CALLBACK(CMaterialEditor, SetSpecularGreen);
-	EVENT_CALLBACK(CMaterialEditor, SetSpecularBlue);
-	EVENT_CALLBACK(CMaterialEditor, SetEmissiveRed);
-	EVENT_CALLBACK(CMaterialEditor, SetEmissiveGreen);
-	EVENT_CALLBACK(CMaterialEditor, SetEmissiveBlue);
+	EVENT_CALLBACK(CMaterialEditor, SetAmbient);
+	EVENT_CALLBACK(CMaterialEditor, SetDiffuse);
+	EVENT_CALLBACK(CMaterialEditor, SetSpecular);
+	EVENT_CALLBACK(CMaterialEditor, SetEmissive);
 	EVENT_CALLBACK(CMaterialEditor, SetShininess);
+
+	void							SetVisible(bool bVisible);
 
 protected:
 	CConversionMaterial*			m_pMaterial;
@@ -107,24 +101,16 @@ protected:
 	glgui::CControl<glgui::CButton>					m_hNormalRemove;
 
 	glgui::CControl<glgui::CLabel>					m_hAmbientLabel;
-	glgui::CControl<glgui::CScrollSelector<float>>	m_hAmbientRedSelector;
-	glgui::CControl<glgui::CScrollSelector<float>>	m_hAmbientGreenSelector;
-	glgui::CControl<glgui::CScrollSelector<float>>	m_hAmbientBlueSelector;
+	glgui::CControl<glgui::CColorPickerButton>		m_hAmbientColorPicker;
 
 	glgui::CControl<glgui::CLabel>					m_hDiffuseSelectorLabel;
-	glgui::CControl<glgui::CScrollSelector<float>>	m_hDiffuseRedSelector;
-	glgui::CControl<glgui::CScrollSelector<float>>	m_hDiffuseGreenSelector;
-	glgui::CControl<glgui::CScrollSelector<float>>	m_hDiffuseBlueSelector;
+	glgui::CControl<glgui::CColorPickerButton>		m_hDiffuseColorPicker;
 
 	glgui::CControl<glgui::CLabel>					m_hSpecularLabel;
-	glgui::CControl<glgui::CScrollSelector<float>>	m_hSpecularRedSelector;
-	glgui::CControl<glgui::CScrollSelector<float>>	m_hSpecularGreenSelector;
-	glgui::CControl<glgui::CScrollSelector<float>>	m_hSpecularBlueSelector;
+	glgui::CControl<glgui::CColorPickerButton>		m_hSpecularColorPicker;
 
 	glgui::CControl<glgui::CLabel>					m_hEmissiveLabel;
-	glgui::CControl<glgui::CScrollSelector<float>>	m_hEmissiveRedSelector;
-	glgui::CControl<glgui::CScrollSelector<float>>	m_hEmissiveGreenSelector;
-	glgui::CControl<glgui::CScrollSelector<float>>	m_hEmissiveBlueSelector;
+	glgui::CControl<glgui::CColorPickerButton>		m_hEmissiveColorPicker;
 
 	glgui::CControl<glgui::CLabel>					m_hShininessLabel;
 	glgui::CControl<glgui::CScrollSelector<float>>	m_hShininessSelector;

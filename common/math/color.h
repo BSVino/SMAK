@@ -41,6 +41,8 @@ public:
 	inline void		SetAlpha(int _a);
 	inline void		SetAlpha(float f);
 
+	inline void		SetHSL(float h, float s, float l);
+
 	int				r() const { return red; };
 	int				g() const { return green; };
 	int				b() const { return blue; };
@@ -158,6 +160,54 @@ void Color::SetAlpha(int _a)
 void Color::SetAlpha(float f)
 {
 	alpha = (int)(f*255);
+}
+
+void Color::SetHSL(float flHue, float flSaturation, float flLightness)
+{
+	float flChroma = (1 - fabs(2 * flLightness - 1)) * flSaturation;
+	float flX = flChroma * (1 - fabs(fmod(flHue, 2) - 1));
+
+	float flR1, flG1, flB1;
+	if (flHue < 1)
+	{
+		flR1 = flChroma;
+		flG1 = flX;
+		flB1 = 0;
+	}
+	else if (flHue < 2)
+	{
+		flR1 = flX;
+		flG1 = flChroma;
+		flB1 = 0;
+	}
+	else if (flHue < 3)
+	{
+		flR1 = 0;
+		flG1 = flChroma;
+		flB1 = flX;
+	}
+	else if (flHue < 4)
+	{
+		flR1 = 0;
+		flG1 = flX;
+		flB1 = flChroma;
+	}
+	else if (flHue < 5)
+	{
+		flR1 = flX;
+		flG1 = 0;
+		flB1 = flChroma;
+	}
+	else
+	{
+		flR1 = flChroma;
+		flG1 = 0;
+		flB1 = flX;
+	}
+
+	float flM = flLightness - flChroma/2;
+
+	*this = Color(flR1+flM, flG1+flM, flB1+flM);
 }
 
 inline Color Color::operator-() const
