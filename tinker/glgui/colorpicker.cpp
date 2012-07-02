@@ -23,6 +23,8 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON A
 #include <tinker/application.h>
 
 #include "rootpanel.h"
+#include "label.h"
+#include "textfield.h"
 
 using namespace glgui;
 
@@ -91,13 +93,28 @@ CColorPicker::CColorPicker(CColorPickerButton* pButton)
 {
 	m_pButton = pButton;
 
+	m_hRGB = AddControl(new CLabel("RGB:"));
+
+	m_hValue = AddControl(new CTextField());
+	m_hValue->SetContentsChangedListener(this, ValueChanged);
+
 	m_hOkay = AddControl(new CButton(0, 0, 100, 100, "Okay"));
 	m_hOkay->SetClickedListener(m_pButton, CColorPickerButton::Close);
+
+	m_clrRGB = Color(0.5f, 0.5f, 0.5f);
+	m_clrRGB.GetHSL(m_flHue, m_flSaturation, m_flLightness);
 }
 
 void CColorPicker::Layout()
 {
 	BaseClass::Layout();
+
+	m_hRGB->SetPos(5, 180);
+	m_hRGB->SetWidth(1);
+	m_hRGB->EnsureTextFits();
+
+	m_hValue->SetPos(m_hRGB->GetRight(), 180);
+	m_hValue->SetRight(GetWidth() - 5);
 
 	m_hOkay->SetSize(40, 20);
 	m_hOkay->SetPos(GetWidth()/2 - 20, GetHeight() - 30);
@@ -111,14 +128,30 @@ void CColorPicker::Paint(float x, float y, float w, float h)
 
 	::CRenderingContext r(nullptr, true);
 
-	r.UseProgram("colorpicker");
+	r.UseProgram("colorwheel");
 
-	r.SetUniform("vecDimensions", Vector4D(x + 10, y + 10, w - 50, w - 50));
+	r.SetUniform("vecDimensions", Vector4D(CircleX(), CircleY(), CircleW(), CircleH()));
 
 	r.SetUniform("clrSelected", m_clrRGB);
+	r.SetUniform("hslSelected", Vector(m_flHue, m_flSaturation, m_flLightness));
 
 	int mx, my;
 	RootPanel()->GetFullscreenMousePos(mx, my);
+	r.SetUniform("vecMouse", Vector((float)mx, (float)my, 0));
+
+	r.BeginRenderVertexArray(s_iQuad);
+	r.SetPositionBuffer((size_t)0u, 24);
+	r.SetTexCoordBuffer(12, 24);
+	r.SetCustomIntBuffer("iVertex", 1, 20, 24);
+	r.EndRenderVertexArray(6);
+
+	r.UseProgram("colorvalue");
+
+	r.SetUniform("vecDimensions", Vector4D(BarX(), BarY(), BarW(), BarH()));
+
+	r.SetUniform("clrSelected", m_clrRGB);
+	r.SetUniform("hslSelected", Vector(m_flHue, m_flSaturation, m_flLightness));
+
 	r.SetUniform("vecMouse", Vector((float)mx, (float)my, 0));
 
 	r.BeginRenderVertexArray(s_iQuad);
@@ -166,6 +199,19 @@ void CColorPicker::CursorMoved(int mx, int my)
 
 bool CColorPicker::Update(int x, int y)
 {
+	if (x > BarX() && y > BarY() && x < BarX() + BarW() && y < BarY() + BarH())
+	{
+		m_flLightness = RemapVal((float)y, BarY(), BarY() + BarH(), 1, 0);
+		m_clrRGB.SetHSL(m_flHue, m_flSaturation, m_flLightness);
+
+		m_hValue->SetText(sprintf("%i %i %i", m_clrRGB.r(), m_clrRGB.g(), m_clrRGB.b()));
+
+		if (m_pfnChangedCallback)
+			m_pfnChangedCallback(m_pChangedListener, sprintf("%f %f %f", GetColorVector().x, GetColorVector().y, GetColorVector().z));
+
+		return true;
+	}
+
 	float flRadius = CircleW()/2;
 	float flRadiusSqr = flRadius*flRadius;
 
@@ -178,11 +224,12 @@ bool CColorPicker::Update(int x, int y)
 
 	float flTan = atan2(vecFromCenter.y, -vecFromCenter.x);
 
-	float flHue = RemapVal(flTan, -M_PI, M_PI, 0, 360/60);
-	float flSaturation = sqrt(flDistanceSqr)/flRadius;
-	float flLightness = 0.5f;
+	m_flHue = RemapVal(flTan, -M_PI, M_PI, 0, 360);
+	m_flSaturation = sqrt(flDistanceSqr)/flRadius;
 
-	m_clrRGB.SetHSL(flHue, flSaturation, flLightness);
+	m_clrRGB.SetHSL(m_flHue, m_flSaturation, m_flLightness);
+
+	m_hValue->SetText(sprintf("%i %i %i", m_clrRGB.r(), m_clrRGB.g(), m_clrRGB.b()));
 
 	if (m_pfnChangedCallback)
 		m_pfnChangedCallback(m_pChangedListener, sprintf("%f %f %f", GetColorVector().x, GetColorVector().y, GetColorVector().z));
@@ -190,10 +237,30 @@ bool CColorPicker::Update(int x, int y)
 	return true;
 }
 
+void CColorPicker::ValueChangedCallback(const tstring& sArgs)
+{
+	tvector<tstring> asArgs;
+	strtok(m_hValue->GetText(), asArgs);
+
+	if (asArgs.size() < 3)
+		return;
+
+	m_clrRGB.SetRed(stoi(asArgs[0]));
+	m_clrRGB.SetGreen(stoi(asArgs[1]));
+	m_clrRGB.SetBlue(stoi(asArgs[2]));
+
+	m_clrRGB.GetHSL(m_flHue, m_flSaturation, m_flLightness);
+
+	if (m_pfnChangedCallback)
+		m_pfnChangedCallback(m_pChangedListener, sprintf("%f %f %f", GetColorVector().x, GetColorVector().y, GetColorVector().z));
+}
+
 void CColorPicker::Close()
 {
 	SetVisible(false);
 	RootPanel()->RemoveControl(this);
+
+	m_pButton->SetState(false, false);
 }
 
 void CColorPicker::SetChangedListener(IEventListener* pListener, IEventListener::Callback pfnCallback)
@@ -205,6 +272,10 @@ void CColorPicker::SetChangedListener(IEventListener* pListener, IEventListener:
 void CColorPicker::SetColor(const Vector& vecColor)
 {
 	m_clrRGB = vecColor;
+
+	m_clrRGB.GetHSL(m_flHue, m_flSaturation, m_flLightness);
+
+	m_hValue->SetText(sprintf("%i %i %i", m_clrRGB.r(), m_clrRGB.g(), m_clrRGB.b()));
 }
 
 Vector CColorPicker::GetColorVector()

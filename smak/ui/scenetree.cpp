@@ -233,7 +233,7 @@ CMaterialEditor::CMaterialEditor(CConversionMaterial* pMaterial, CControl<CScene
 	m_hSceneTree->GetAbsPos(x, y);
 
 	SetPos(x + m_hSceneTree->GetWidth(), y);
-	SetSize(500, 300);
+	SetSize(500, 230);
 
 	m_hDiffuseLabel = AddControl(new CLabel(0, 0, 1, 1, "Diffuse map: "));
 	m_hDiffuseFile = AddControl(new CButton(0, 0, 1, 1, ""));
@@ -281,8 +281,12 @@ CMaterialEditor::CMaterialEditor(CConversionMaterial* pMaterial, CControl<CScene
 
 void CMaterialEditor::SetupSelector(CScrollSelector<float>* pSelector, float flMaxValue)
 {
-	pSelector->AddSelection(CScrollSelection<float>(0*flMaxValue/20, "0%"));
+	pSelector->AddSelection(CScrollSelection<float>(1*flMaxValue/100, "1%"));
+	pSelector->AddSelection(CScrollSelection<float>(2*flMaxValue/100, "2%"));
+	pSelector->AddSelection(CScrollSelection<float>(3*flMaxValue/100, "3%"));
+	pSelector->AddSelection(CScrollSelection<float>(4*flMaxValue/100, "4%"));
 	pSelector->AddSelection(CScrollSelection<float>(1*flMaxValue/20, "5%"));
+	pSelector->AddSelection(CScrollSelection<float>(7.5f*flMaxValue/100, "7.5%"));
 	pSelector->AddSelection(CScrollSelection<float>(2*flMaxValue/20, "10%"));
 	pSelector->AddSelection(CScrollSelection<float>(3*flMaxValue/20, "15%"));
 	pSelector->AddSelection(CScrollSelection<float>(4*flMaxValue/20, "20%"));
@@ -396,7 +400,7 @@ void CMaterialEditor::Layout()
 	m_hEmissiveColorPicker->SetPos(flEmissiveRight, flColorPickerHeight);
 	m_hEmissiveColorPicker->SetColor(m_pMaterial->m_vecEmissive);
 
-	flHeight += flControlHeight + 15;
+	flHeight += flControlHeight + 20;
 
 	m_hShininessLabel->SetPos(10, flHeight);
 	m_hShininessLabel->EnsureTextFits();
@@ -404,9 +408,10 @@ void CMaterialEditor::Layout()
 	m_hShininessLabel->GetPos(x, y);
 	float flShininessRight = x + m_hShininessLabel->GetWidth();
 
-	m_hShininessSelector->SetPos(flShininessRight, flHeight);
+	m_hShininessSelector->SetHeight(40);
+	m_hShininessSelector->SetPos(flShininessRight, flHeight + m_hShininessLabel->GetHeight()/2 - m_hShininessSelector->GetHeight()/2);
 	m_hShininessSelector->SetSelection((int)(m_pMaterial->m_flShininess/127*20));
-	m_hShininessSelector->SetRight(GetWidth()/2-5);
+	m_hShininessSelector->SetRight(GetWidth()-5);
 
 	CMovablePanel::Layout();
 }

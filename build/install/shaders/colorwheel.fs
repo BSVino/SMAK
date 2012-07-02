@@ -1,5 +1,6 @@
 uniform vec4 vecDimensions;
 uniform vec4 clrSelected;
+uniform vec3 hslSelected;
 uniform vec3 vecMouse;
 
 in vec3 vecFragmentPosition;
@@ -22,21 +23,19 @@ void main()
 
 	float flTan = atan(vecFromCenter.y, -vecFromCenter.x);
 
-	float flHue = RemapVal(flTan, -PI, PI, 0.0, 360.0/60.0);
+	float flHue = RemapVal(flTan, -PI, PI, 0.0, 360.0);
 	float flSaturation = flDistance/flRadius;
-	float flLightness = 0.5;
+	float flLightness = hslSelected.z;
 
 	vecOutputColor = vec4(GetRGBFromHSL(flHue, flSaturation, flLightness), 1.0);
 
 	vec2 vecPreview;
 	vec3 clrPreview;
 
-	vec3 vecHSL = GetHSLFromRGB(clrSelected.rgb);
-
-	float flHueRadians = RemapVal(vecHSL.x, 0.0, 360.0, -PI, PI) - PI/2.0;
+	float flHueRadians = RemapVal(hslSelected.x, 0.0, 360.0, -PI, PI) - PI/2.0;
 	float flRatio = tan(flHueRadians);
 
-	float flDistanceFromCenter = vecHSL.y * flRadius;
+	float flDistanceFromCenter = hslSelected.y * flRadius;
 
 	vecPreview = vecCenter + vec2(sin(flHueRadians)*flDistanceFromCenter, cos(flHueRadians)*flDistanceFromCenter);
 	clrPreview = clrSelected.rgb;
@@ -59,7 +58,7 @@ void main()
 
 		flTan = atan(vecMouseFromCenter.y, -vecMouseFromCenter.x);
 
-		flHue = RemapVal(flTan, -PI, PI, 0.0, 360.0/60.0);
+		flHue = RemapVal(flTan, -PI, PI, 0.0, 360.0);
 		flSaturation = sqrt(flMouseDistanceSqr)/flRadius;
 
 		clrPreview = GetRGBFromHSL(flHue, flSaturation, flLightness);

@@ -1,0 +1,3 @@
+Name: colorvalue
+Vertex: gui
+Fragment: colorvalue

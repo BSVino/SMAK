@@ -22,7 +22,7 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON A
 
 namespace glgui
 {
-	class CColorPicker : public CPanel
+	class CColorPicker : public CPanel, public IEventListener
 	{
 		DECLARE_CLASS(CColorPicker, CPanel);
 
@@ -39,6 +39,8 @@ namespace glgui
 		virtual void		CursorMoved(int mx, int my);
 		virtual bool		Update(int x, int y);
 
+		EVENT_CALLBACK(CColorPicker, ValueChanged);
+
 		void				Close();
 
 		void				SetChangedListener(IEventListener* pListener, IEventListener::Callback pfnCallback);
@@ -51,15 +53,25 @@ namespace glgui
 		float				CircleW() const { return GetWidth() - 50; }
 		float				CircleH() const { return GetWidth() - 50; }
 
+		float				BarX() const { return GetLeft() + GetWidth() - 35; }
+		float				BarY() const { return GetTop() + 10; }
+		float				BarW() const { return 30; }
+		float				BarH() const { return GetWidth() - 50; }
+
 	protected:
 		class CColorPickerButton*	m_pButton;
 
-		glgui::CControl<glgui::CButton>	m_hOkay;
+		CControl<CLabel>		m_hRGB;
+		CControl<CTextField>	m_hValue;
+		CControl<CButton>		m_hOkay;
 
 		IEventListener::Callback	m_pfnChangedCallback;
 		IEventListener*				m_pChangedListener;
 
 		Color				m_clrRGB;
+		float				m_flHue;
+		float				m_flSaturation;
+		float				m_flLightness;
 
 		static CControl<CColorPicker>	s_hOpenPicker;
 	};

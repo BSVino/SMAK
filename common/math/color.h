@@ -26,22 +26,23 @@ class TemplateVector;
 class Color
 {
 public:
-	inline			Color();
-	inline			Color(class TemplateVector<float> v);
-	inline			Color(int _r, int _g, int _b);
-	inline			Color(int _r, int _g, int _b, int _a);
-	inline			Color(float _r, float _g, float _b);
-	inline			Color(float _r, float _g, float _b, float _a);
+					Color();
+					Color(class TemplateVector<float> v);
+					Color(int _r, int _g, int _b);
+					Color(int _r, int _g, int _b, int _a);
+					Color(float _r, float _g, float _b);
+					Color(float _r, float _g, float _b, float _a);
 
-	inline void		SetColor(int _r, int _g, int _b, int _a);
-	inline void		SetColor(float _r, float _g, float _b, float _a);
-	inline void		SetRed(int _r);
-	inline void		SetGreen(int _g);
-	inline void		SetBlue(int _b);
-	inline void		SetAlpha(int _a);
-	inline void		SetAlpha(float f);
+	void			SetColor(int _r, int _g, int _b, int _a);
+	void			SetColor(float _r, float _g, float _b, float _a);
+	void			SetRed(int _r);
+	void			SetGreen(int _g);
+	void			SetBlue(int _b);
+	void			SetAlpha(int _a);
+	void			SetAlpha(float f);
 
-	inline void		SetHSL(float h, float s, float l);
+	void			SetHSL(float h, float s, float l);
+	void			GetHSL(float& h, float& s, float& l);
 
 	int				r() const { return red; };
 	int				g() const { return green; };
@@ -88,184 +89,5 @@ private:
 	unsigned char	blue;
 	unsigned char	alpha;
 };
-
-#include "vector.h"
-
-Color::Color()
-{
-	SetColor(0, 0, 0, 255);
-}
-
-Color::Color(Vector v)
-{
-	SetColor((int)(v.x*255), (int)(v.y*255), (int)(v.z*255), 255);
-}
-
-Color::Color(int _r, int _g, int _b)
-{
-	SetColor(_r, _g, _b, 255);
-}
-
-Color::Color(int _r, int _g, int _b, int _a)
-{
-	SetColor(_r, _g, _b, _a);
-}
-
-Color::Color(float _r, float _g, float _b)
-{
-	SetColor(_r, _g, _b, 1.0f);
-}
-
-Color::Color(float _r, float _g, float _b, float _a)
-{
-	SetColor(_r, _g, _b, _a);
-}
-
-void Color::SetColor(int _r, int _g, int _b, int _a)
-{
-	red = _r;
-	green = _g;
-	blue = _b;
-	alpha = _a;
-}
-
-void Color::SetColor(float _r, float _g, float _b, float _a)
-{
-	red = (int)(_r*255);
-	green = (int)(_g*255);
-	blue = (int)(_b*255);
-	alpha = (int)(_a*255);
-}
-
-void Color::SetRed(int _r)
-{
-	red = _r;
-}
-
-void Color::SetGreen(int _g)
-{
-	green = _g;
-}
-
-void Color::SetBlue(int _b)
-{
-	blue = _b;
-}
-
-void Color::SetAlpha(int _a)
-{
-	alpha = _a;
-}
-
-void Color::SetAlpha(float f)
-{
-	alpha = (int)(f*255);
-}
-
-void Color::SetHSL(float flHue, float flSaturation, float flLightness)
-{
-	float flChroma = (1 - fabs(2 * flLightness - 1)) * flSaturation;
-	float flX = flChroma * (1 - fabs(fmod(flHue, 2) - 1));
-
-	float flR1, flG1, flB1;
-	if (flHue < 1)
-	{
-		flR1 = flChroma;
-		flG1 = flX;
-		flB1 = 0;
-	}
-	else if (flHue < 2)
-	{
-		flR1 = flX;
-		flG1 = flChroma;
-		flB1 = 0;
-	}
-	else if (flHue < 3)
-	{
-		flR1 = 0;
-		flG1 = flChroma;
-		flB1 = flX;
-	}
-	else if (flHue < 4)
-	{
-		flR1 = 0;
-		flG1 = flX;
-		flB1 = flChroma;
-	}
-	else if (flHue < 5)
-	{
-		flR1 = flX;
-		flG1 = 0;
-		flB1 = flChroma;
-	}
-	else
-	{
-		flR1 = flChroma;
-		flG1 = 0;
-		flB1 = flX;
-	}
-
-	float flM = flLightness - flChroma/2;
-
-	*this = Color(flR1+flM, flG1+flM, flB1+flM);
-}
-
-inline Color Color::operator-() const
-{
-	return Color(255-red, 255-green, 255-blue, alpha);
-}
-
-inline Color Color::operator+(const Color& v) const
-{
-	return Color(red+v.red, green+v.green, blue+v.blue, alpha+v.alpha);
-}
-
-inline Color Color::operator-(const Color& v) const
-{
-	return Color(red-v.red, green-v.green, blue-v.blue, alpha-v.alpha);
-}
-
-inline Color Color::operator*(float s) const
-{
-	return Color((int)(red*s), (int)(green*s), (int)(blue*s), (int)alpha);
-}
-
-inline Color Color::operator/(float s) const
-{
-	return Color((int)(red/s), (int)(green/s), (int)(blue/s), (int)alpha);
-}
-
-inline void Color::operator+=(const Color& v)
-{
-	red += v.red;
-	green += v.green;
-	blue += v.blue;
-}
-
-inline void Color::operator-=(const Color& v)
-{
-	red -= v.red;
-	green -= v.green;
-	blue -= v.blue;
-}
-
-inline void Color::operator*=(float s)
-{
-	red = (int)(s*red);
-	green = (int)(s*green);
-	blue = (int)(s*blue);
-}
-
-inline void Color::operator/=(float s)
-{
-	red = (int)(red/s);
-	green = (int)(green/s);
-	blue = (int)(blue/s);
-}
-
-inline Color Color::operator*(const Color& v) const
-{
-	return Color(red*(float)(v.red/255), green*(float)(v.green/255), blue*(float)(v.blue/255), alpha*(float)(v.alpha/255));
-}
 
 #endif
