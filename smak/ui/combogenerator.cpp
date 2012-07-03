@@ -507,16 +507,19 @@ void CComboGeneratorPanel::GenerateCallback(const tstring& sArgs)
 		hNormal = m_oGenerator.GenerateNormal();
 	}
 
-	for (size_t i = 0; i < SMAKWindow()->GetMaterials().size(); i++)
+	for (size_t i = 0; i < m_apLoResMeshes.size(); i++)
 	{
-		CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[i];
+		for (auto it = m_apLoResMeshes[i]->m_aiMaterialsMap.begin(); it != m_apLoResMeshes[i]->m_aiMaterialsMap.end(); it++)
+		{
+			CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[it->second.m_iMaterial];
 
-		if (!m_pScene->GetMaterial(i)->IsVisible())
-			continue;
+			if (!m_pScene->GetMaterial(it->second.m_iMaterial)->IsVisible())
+				continue;
 
-		hMaterial->SetParameter("DiffuseTexture", hDiffuse);
-		hMaterial->SetParameter("AmbientOcclusion", hAO);
-		hMaterial->SetParameter("Normal", hNormal);
+			hMaterial->SetParameter("DiffuseTexture", hDiffuse);
+			hMaterial->SetParameter("AmbientOcclusion", hAO);
+			hMaterial->SetParameter("Normal", hNormal);
+		}
 	}
 
 	m_hSave->SetVisible(m_oGenerator.DoneGenerating());
@@ -581,18 +584,21 @@ void CComboGeneratorPanel::WorkProgress(size_t iProgress, bool bForceDraw)
 		CTextureHandle hAO = m_oGenerator.GenerateAO(true);
 		CTextureHandle hNormal = m_oGenerator.GenerateNormal(true);
 
-		for (size_t i = 0; i < SMAKWindow()->GetMaterials().size(); i++)
+		for (size_t i = 0; i < m_apLoResMeshes.size(); i++)
 		{
-			CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[i];
-			if (!hMaterial.IsValid())
-				continue;
+			for (auto it = m_apLoResMeshes[i]->m_aiMaterialsMap.begin(); it != m_apLoResMeshes[i]->m_aiMaterialsMap.end(); it++)
+			{
+				CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[it->second.m_iMaterial];
+				if (!hMaterial.IsValid())
+					continue;
 
-			if (!m_pScene->GetMaterial(i)->IsVisible())
-				continue;
+				if (!m_pScene->GetMaterial(it->second.m_iMaterial)->IsVisible())
+					continue;
 
-			hMaterial->SetParameter("DiffuseTexture", hDiffuse);
-			hMaterial->SetParameter("AmbientOcclusion", hAO);
-			hMaterial->SetParameter("Normal", hNormal);
+				hMaterial->SetParameter("DiffuseTexture", hDiffuse);
+				hMaterial->SetParameter("AmbientOcclusion", hAO);
+				hMaterial->SetParameter("Normal", hNormal);
+			}
 		}
 
 		flLastGenerate = CSMAKWindow::Get()->GetTime();
