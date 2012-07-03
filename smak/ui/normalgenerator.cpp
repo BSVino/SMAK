@@ -163,14 +163,14 @@ CNormalPanel::CNormalPanel(CConversionScene* pScene)
 	m_hSave->SetClickedListener(this, SaveMapDialog);
 	m_hSave->SetVisible(false);
 
+	SetSize(400, 450);
+	SetPos(GetParent()->GetWidth() - GetWidth() - 50, GetParent()->GetHeight() - GetHeight() - 100);
+
 	Layout();
 }
 
 void CNormalPanel::Layout()
 {
-	SetSize(400, 450);
-	SetPos(GetParent()->GetWidth() - GetWidth() - 50, GetParent()->GetHeight() - GetHeight() - 100);
-
 	float flSpace = 20;
 
 	m_hMaterialsLabel->EnsureTextFits();

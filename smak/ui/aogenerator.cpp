@@ -168,16 +168,16 @@ CAOPanel::CAOPanel(bool bColor, CConversionScene* pScene)
 	m_hSave->SetClickedListener(this, SaveMapDialog);
 	m_hSave->SetVisible(false);
 
-	Layout();
-}
-
-void CAOPanel::Layout()
-{
 	if (m_bColor)
 		SetPos(GetParent()->GetWidth() - GetWidth() - 50, GetParent()->GetHeight() - GetHeight() - 150);
 	else
 		SetPos(GetParent()->GetWidth() - GetWidth() - 200, GetParent()->GetHeight() - GetHeight() - 100);
 
+	Layout();
+}
+
+void CAOPanel::Layout()
+{
 	float flSpace = 20;
 
 	m_hSizeLabel->EnsureTextFits();
