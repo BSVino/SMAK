@@ -601,7 +601,8 @@ void CTexelDiffuseMethod::PreGenerate()
 
 void CTexelDiffuseMethod::GenerateTexel(size_t iTexel, CConversionMeshInstance* pMeshInstance, CConversionFace* pFace, CConversionVertex* pV1, CConversionVertex* pV2, CConversionVertex* pV3, raytrace::CTraceResult* tr, const Vector& vecUVPosition, raytrace::CRaytracer* pTracer)
 {
-	CTexture& oTexture = m_aTextures[tr->m_pMeshInstance->GetMappedMaterial(tr->m_pFace->m)->m_iMaterial];
+	CConversionFace* pHitFace = tr->m_pMeshInstance->GetMesh()->GetFace(tr->m_iFace);
+	CTexture& oTexture = m_aTextures[tr->m_pMeshInstance->GetMappedMaterial(pHitFace->m)->m_iMaterial];
 
 	if (!oTexture.m_pclrData)
 		return;
@@ -609,9 +610,9 @@ void CTexelDiffuseMethod::GenerateTexel(size_t iTexel, CConversionMeshInstance* 
 	CConversionMesh* pHitMesh = tr->m_pMeshInstance->GetMesh();
 
 	// TODO: Use the nearest triangle in this face.
-	CConversionVertex* pHitV1 = tr->m_pFace->GetVertex(0);
-	CConversionVertex* pHitV2 = tr->m_pFace->GetVertex(1);
-	CConversionVertex* pHitV3 = tr->m_pFace->GetVertex(2);
+	CConversionVertex* pHitV1 = pHitFace->GetVertex(0);
+	CConversionVertex* pHitV2 = pHitFace->GetVertex(1);
+	CConversionVertex* pHitV3 = pHitFace->GetVertex(2);
 
 	Vector2D vu1 = pHitMesh->GetUV(pHitV1->vu);
 	Vector2D vu2 = pHitMesh->GetUV(pHitV2->vu);
@@ -860,7 +861,8 @@ void CTexelAOMethod::SetSize(size_t iWidth, size_t iHeight)
 
 void CTexelAOMethod::GenerateTexel(size_t iTexel, CConversionMeshInstance* pMeshInstance, CConversionFace* pFace, CConversionVertex* pV1, CConversionVertex* pV2, CConversionVertex* pV3, raytrace::CTraceResult* tr, const Vector& vecUVPosition, raytrace::CRaytracer* pTracer)
 {
-	Vector vecHitNormal = tr->m_pFace->GetNormal(tr->m_vecHit, tr->m_pMeshInstance);
+	CConversionFace* pHitFace = tr->m_pMeshInstance->GetMesh()->GetFace(tr->m_iFace);
+	Vector vecHitNormal = pHitFace->GetNormal(tr->m_vecHit, tr->m_pMeshInstance);
 
 	// Build rotation matrix
 	Matrix4x4 m;
@@ -1185,7 +1187,8 @@ void CTexelNormalMethod::SetSize(size_t iWidth, size_t iHeight)
 
 void CTexelNormalMethod::GenerateTexel(size_t iTexel, CConversionMeshInstance* pMeshInstance, CConversionFace* pFace, CConversionVertex* pV1, CConversionVertex* pV2, CConversionVertex* pV3, raytrace::CTraceResult* tr, const Vector& vecUVPosition, raytrace::CRaytracer* pTracer)
 {
-	Vector vecHitNormal = tr->m_pFace->GetNormal(tr->m_vecHit, tr->m_pMeshInstance);
+	CConversionFace* pHitFace = tr->m_pMeshInstance->GetMesh()->GetFace(tr->m_iFace);
+	Vector vecHitNormal = pHitFace->GetNormal(tr->m_vecHit, tr->m_pMeshInstance);
 
 	// Build rotation matrix
 	Matrix4x4 mObjectToTangent;

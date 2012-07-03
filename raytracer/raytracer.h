@@ -27,7 +27,7 @@ class CTraceResult
 {
 public:
 	Vector						m_vecHit;
-	CConversionFace*			m_pFace;
+	size_t						m_iFace;
 	CConversionMeshInstance*	m_pMeshInstance;
 };
 
@@ -35,12 +35,13 @@ class CKDTri
 {
 public:
 								CKDTri();
-								CKDTri(Vector v1, Vector v2, Vector v3, CConversionFace* pFace, CConversionMeshInstance* pMeshInstance = NULL);
+								CKDTri(size_t v1, size_t v2, size_t v3, size_t iMeshInstanceVertsIndex, size_t iFace, CConversionMeshInstance* pMeshInstance = nullptr);
 
 public:
-	Vector						v[3];
+	size_t						v[3];
 
-	CConversionFace*			m_pFace;
+	size_t						m_iMeshInstanceVertsIndex;
+	size_t						m_iFace;
 	CConversionMeshInstance*	m_pMeshInstance;
 };
 
@@ -53,7 +54,7 @@ public:
 public:
 	// Reserves memory for triangles all at once, for faster allocation
 	void						ReserveTriangles(size_t iEstimatedTriangles);
-	void						AddTriangle(Vector v1, Vector v2, Vector v3, CConversionFace* pFace, CConversionMeshInstance* pMeshInstance = NULL);
+	void						AddTriangle(size_t v1, size_t v2, size_t v3, size_t iMeshInstanceVertsIndex, size_t iFace, CConversionMeshInstance* pMeshInstance);
 
 	void						RemoveArea(const AABB& oBox);
 
@@ -93,14 +94,16 @@ protected:
 
 class CKDTree
 {
+	friend class CKDNode;
+
 public:
-								CKDTree(size_t iMaxDepth = 15);
+								CKDTree(class CRaytracer* pTracer, size_t iMaxDepth = 15);
 								~CKDTree();
 
 public:
 	// Reserves memory for triangles all at once, for faster allocation
 	void						ReserveTriangles(size_t iEstimatedTriangles);
-	void						AddTriangle(Vector v1, Vector v2, Vector v3, CConversionFace* pFace = NULL, CConversionMeshInstance* pMeshInstance = NULL);
+	void						AddTriangle(size_t v1, size_t v2, size_t v3, size_t iMeshInstanceVertsIndex, size_t iFace, CConversionMeshInstance* pMeshInstance);
 
 	void						RemoveArea(const AABB& oBox);
 
@@ -117,6 +120,7 @@ public:
 	size_t						GetMaxDepth() { return m_iMaxDepth; };
 
 protected:
+	class CRaytracer*			m_pRaytracer;
 	CKDNode*					m_pTop;
 
 	bool						m_bBuilt;
@@ -126,6 +130,8 @@ protected:
 
 class CRaytracer
 {
+	friend class CKDNode;
+
 public:
 								CRaytracer(CConversionScene* pScene = NULL, size_t iMaxDepth = 15);
 								~CRaytracer();
@@ -139,7 +145,6 @@ public:
 
 	void						AddMeshesFromNode(CConversionSceneNode* pNode);
 	void						AddMeshInstance(CConversionMeshInstance* pMeshInstance);
-	void						AddTriangle(Vector v1, Vector v2, Vector v3);
 	void						BuildTree();
 
 	void						RemoveArea(const AABB& oBox);
@@ -152,6 +157,8 @@ protected:
 	CKDTree*					m_pTree;
 
 	size_t						m_iMaxDepth;
+
+	tvector<tvector<Vector>>	m_aaMeshInstanceVerts;
 };
 
 };
