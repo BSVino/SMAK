@@ -18,7 +18,6 @@ GNU General Public License for more details.
 #include <matrix.h>
 
 #include <raytracer/raytracer.h>
-#include <common/stb_image_write.h>
 #include <textures/texturelibrary.h>
 
 #if 0
@@ -527,12 +526,14 @@ void CTexelMethod::SaveToFile(const tstring& sFilename)
 {
 	tstring sRealFilename = sFilename.substr(0, sFilename.length()-4) + "-" + FileSuffix() + sFilename.substr(sFilename.length()-4, 4);
 
-	if (sRealFilename.endswith(".png"))
-		stbi_write_png(sRealFilename.c_str(), m_iWidth, m_iHeight, 3, GetData(), 0);
-	else if (sRealFilename.endswith(".bmp"))
-		stbi_write_bmp(sRealFilename.c_str(), m_iWidth, m_iHeight, 3, GetData());
-	else if (sRealFilename.endswith(".tga"))
-		stbi_write_tga(sRealFilename.c_str(), m_iWidth, m_iHeight, 3, GetData());
+	Vector* pvecData = GetData();
+	tvector<Color> aclrData;
+	aclrData.resize(m_iWidth*m_iHeight);
+
+	for (size_t i = 0; i < aclrData.size(); i++)
+		aclrData[i] = pvecData[i];
+
+	CRenderer::WriteTextureToFile(aclrData.data(), m_iWidth, m_iHeight, sRealFilename);
 }
 
 CTexelDiffuseMethod::CTexelDiffuseMethod(CTexelGenerator* pGenerator)
@@ -809,9 +810,9 @@ CTextureHandle CTexelDiffuseMethod::GenerateDiffuse(bool bInMedias)
 	return CTextureLibrary::AddTexture(avecDiffuseValues, m_iWidth, m_iHeight);
 }
 
-void* CTexelDiffuseMethod::GetData()
+Vector* CTexelDiffuseMethod::GetData()
 {
-	return &m_avecDiffuseValues[0].x;
+	return &m_avecDiffuseValues[0];
 }
 
 CTexelAOMethod::CTexelAOMethod(CTexelGenerator* pGenerator, size_t iSamples, bool bRandomize, float flRayFalloff, bool bGroundOcclusion, size_t iBleed)
@@ -1145,9 +1146,9 @@ CTextureHandle CTexelAOMethod::GenerateAO(bool bInMedias)
 	return CTextureLibrary::AddTexture(avecShadowValues, m_iWidth, m_iHeight);
 }
 
-void* CTexelAOMethod::GetData()
+Vector* CTexelAOMethod::GetData()
 {
-	return &m_avecShadowValues[0].x;
+	return &m_avecShadowValues[0];
 }
 
 CTexelNormalMethod::CTexelNormalMethod(CTexelGenerator* pGenerator)
@@ -1358,7 +1359,7 @@ void CTexelNormalMethod::SaveToFile(const tstring& sFilename)
 	}
 }
 
-void* CTexelNormalMethod::GetData()
+Vector* CTexelNormalMethod::GetData()
 {
-	return &m_avecNormalValues[0].x;
+	return &m_avecNormalValues[0];
 }

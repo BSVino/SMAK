@@ -401,6 +401,16 @@ void CSMAKWindow::SaveNormal(size_t iMaterial, const tstring& sFilename)
 	CTextureHandle hNormal = hMaterial->m_ahTextures[iNormal];
 	CTextureHandle hNormal2 = hMaterial->m_ahTextures[iNormal2];
 
+	if (!hNormal || !hNormal2)
+	{
+		if (hNormal.IsValid())
+			CRenderer::WriteTextureToFile(hNormal->m_iGLID, sFilename);
+		else
+			CRenderer::WriteTextureToFile(hNormal2->m_iGLID, sFilename);
+
+		return;
+	}
+
 	tvector<Vector> avecNormals;
 	tvector<Vector> avecNormals2;
 

@@ -53,7 +53,7 @@ public:
 	virtual void			SaveToFile(const tstring& sFilename);
 
 	virtual tstring			FileSuffix() { return ""; };
-	virtual void*			GetData() { return NULL; };
+	virtual Vector*			GetData() { return NULL; };
 
 protected:
 	CTexelGenerator*		m_pGenerator;
@@ -83,7 +83,7 @@ public:
 	virtual CTextureHandle	GenerateDiffuse(bool bInMedias = false);
 
 	virtual tstring			FileSuffix() { return "diffuse"; };
-	virtual void*			GetData();
+	virtual Vector*			GetData();
 
 protected:
 	Vector*					m_avecDiffuseValues;
@@ -120,7 +120,7 @@ public:
 	virtual CTextureHandle	GenerateAO(bool bInMedias = false);
 
 	virtual tstring	FileSuffix() { return "ao"; };
-	virtual void*			GetData();
+	virtual Vector*			GetData();
 
 protected:
 	size_t					m_iSamples;
@@ -156,7 +156,7 @@ public:
 	virtual void			SaveToFile(const tstring& sFilename);
 
 	virtual tstring	FileSuffix() { return "normal"; };
-	virtual void*			GetData();
+	virtual Vector*			GetData();
 
 protected:
 	Vector*					m_avecNormalValues;
