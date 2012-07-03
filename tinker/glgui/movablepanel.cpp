@@ -37,9 +37,9 @@ void CCloseButton::Paint(float x, float y, float w, float h)
 {
 	Color c;
 	
-	c.SetRed((int)RemapVal(m_flHighlight, 0.0f, 1.0f, (float)g_clrBox.r() * 2, 255.0f));
-	c.SetGreen((int)RemapVal(m_flHighlight, 0.0f, 1.0f, (float)g_clrBox.g(), (float)g_clrBoxHi.g()));
-	c.SetBlue((int)RemapVal(m_flHighlight, 0.0f, 1.0f, (float)g_clrBox.b(), (float)g_clrBoxHi.b()));
+	c.SetRed((int)RemapVal(m_flHighlight, 0.0f, 1.0f, 125, 255));
+	c.SetGreen((int)RemapVal(m_flHighlight, 0.0f, 1.0f, 50, 150));
+	c.SetBlue((int)RemapVal(m_flHighlight, 0.0f, 1.0f, 55, 160));
 	c.SetAlpha(255);
 
 	CRootPanel::PaintRect(x, y, w, h, c);
@@ -49,9 +49,9 @@ void CMinimizeButton::Paint(float x, float y, float w, float h)
 {
 	Color c;
 	
-	c.SetRed((int)RemapVal(m_flHighlight, 0.0f, 1.0f, (float)g_clrBox.r(), (float)g_clrBox.r()));
-	c.SetGreen((int)RemapVal(m_flHighlight, 0.0f, 1.0f, (float)g_clrBox.g(), (float)g_clrBoxHi.g()));
-	c.SetBlue((int)RemapVal(m_flHighlight, 0.0f, 1.0f, (float)g_clrBox.b() * 2, 255.0f));
+	c.SetRed((int)RemapVal(m_flHighlight, 0.0f, 1.0f, 50, 150));
+	c.SetGreen((int)RemapVal(m_flHighlight, 0.0f, 1.0f, 55, 160));
+	c.SetBlue((int)RemapVal(m_flHighlight, 0.0f, 1.0f, 125, 255));
 	c.SetAlpha(255);
 
 	CRootPanel::PaintRect(x, y+h/3+1, w, h/3, c);
@@ -226,7 +226,7 @@ void CMovablePanel::SetClearBackground(bool bClearBackground)
 
 	if (m_bClearBackground)
 	{
-		m_clrHeader.SetAlpha(0.6f);
+		m_clrHeader.SetAlpha(0.7f);
 		SetBackgroundColor(Color(m_clrBackground.r(), m_clrBackground.g(), m_clrBackground.b(), 0));
 	}
 	else
