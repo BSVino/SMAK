@@ -72,6 +72,7 @@ public:
 	virtual void			MouseWheel(int x, int y);
 	virtual bool			DoCharPress(int c);
 	virtual bool			DoKeyPress(int c);
+	virtual void			DoKeyRelease(int c);
 
 	EVENT_CALLBACK(CSMAKWindow, OpenDialog);
 	EVENT_CALLBACK(CSMAKWindow, OpenFile);

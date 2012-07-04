@@ -293,5 +293,22 @@ bool CSMAKWindow::DoKeyPress(int c)
 		return true;
 	}
 
+	if (m_bCameraRotating && (c == TINKER_KEY_LCTRL || c == TINKER_KEY_RCTRL))
+	{
+		m_bLightRotating = true;
+		m_bCameraRotating = false;
+	}
+
 	return false;
+}
+
+void CSMAKWindow::DoKeyRelease(int c)
+{
+	if (m_bLightRotating && (c == TINKER_KEY_LCTRL || c == TINKER_KEY_RCTRL))
+	{
+		m_bLightRotating = false;
+		m_bCameraRotating = true;
+	}
+
+	BaseClass::DoKeyRelease(c);
 }
