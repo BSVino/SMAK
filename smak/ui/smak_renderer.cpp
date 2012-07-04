@@ -80,7 +80,11 @@ void CSMAKRenderer::Render()
 		m_flCameraNear = 1;
 		m_flCameraFar = SMAKWindow()->GetCameraDistance() + flSceneSize;
 
-		Vector vecSceneCenter = SMAKWindow()->GetScene()->m_oExtends.Center();
+		Vector vecSceneCenter;
+
+		CConversionMesh* pMesh = SceneTree()->GetSelectedMesh();
+		if (!pMesh)
+			vecSceneCenter = SMAKWindow()->GetScene()->m_oExtends.Center();
 
 		Vector vecCameraVector = AngleVector(EAngle(SMAKWindow()->GetCameraPitch(), SMAKWindow()->GetCameraYaw(), 0)) * -SMAKWindow()->GetCameraDistance() + vecSceneCenter;
 
@@ -187,7 +191,10 @@ void CSMAKRenderer::RenderGround()
 	CRenderingContext c(this, true);
 
 	c.UseProgram("grid");
-	c.Translate(SMAKWindow()->GetScene()->m_oExtends.Center());
+
+	CConversionMesh* pMesh = SceneTree()->GetSelectedMesh();
+	if (!pMesh)
+		c.Translate(SMAKWindow()->GetScene()->m_oExtends.Center());
 
 	int i;
 
@@ -277,8 +284,108 @@ void CSMAKRenderer::RenderObjects()
 {
 	CRenderingContext c(this, true);
 
-	for (size_t i = 0; i < SMAKWindow()->GetScene()->GetNumScenes(); i++)
-		RenderSceneNode(SMAKWindow()->GetScene()->GetScene(i));
+	CConversionMesh* pSelectedMesh = SceneTree()->GetSelectedMesh();
+
+	if (pSelectedMesh)
+	{
+		size_t iSelectedMesh = ~0;
+		for (size_t i = 0; i < SMAKWindow()->GetScene()->GetNumMeshes(); i++)
+		{
+			if (SMAKWindow()->GetScene()->GetMesh(i) == pSelectedMesh)
+			{
+				iSelectedMesh = i;
+				break;
+			}
+		}
+
+		TAssert(iSelectedMesh != ~0);
+
+		CModel* pModel = CModelLibrary::GetModel(iSelectedMesh);
+
+		if (!pModel)
+			return;
+
+		c.Translate(-pModel->m_aabbBoundingBox.Center());
+
+		if (SMAKWindow()->IsRenderingWireframe())
+		{
+			c.UseProgram("wireframe");
+
+			c.SetUniform("flAlpha", 1.0f);
+			c.SetUniform("bDiffuse", false);
+
+			if (SMAKWindow()->IsRenderingLight())
+			{
+				c.SetUniform("bLight", true);
+				c.SetUniform("vecLightDirection", -m_vecLightPosition.Normalized());
+				c.SetUniform("clrLightDiffuse", Vector(1, 1, 1));
+				c.SetUniform("clrLightAmbient", Vector(0.2f, 0.2f, 0.2f));
+				c.SetUniform("clrLightSpecular", Vector(1, 1, 1));
+			}
+			else
+				c.SetUniform("bLight", false);
+
+			c.BeginRenderVertexArray(pModel->m_iVertexWireframeBuffer);
+			c.SetPositionBuffer(pModel->WireframePositionOffset(), pModel->WireframeStride());
+			c.SetNormalsBuffer(pModel->NormalsOffset(), pModel->WireframeStride());
+			c.EndRenderVertexArray(pModel->m_iVertexWireframeBufferSize, true);
+		}
+		else
+		{
+			for (size_t i = 0; i < pModel->m_asMaterialStubs.size(); i++)
+			{
+				if (!pModel->m_aiVertexBufferSizes[i])
+					return;
+
+				c.UseProgram("model");
+
+				c.SetUniform("flAlpha", 1.0f);
+				c.SetUniform("vecColor", Color(255, 255, 255));
+				c.SetUniform("bDiffuse", false);
+				c.SetUniform("bShadeBottoms", false);
+				c.SetUniform("bNormal", false);
+				c.SetUniform("bNormal2", false);
+				c.SetUniform("bAO", false);
+
+				c.SetUniform("clrMaterialAmbient", Vector(0.2f, 0.2f, 0.2f));
+				c.SetUniform("clrMaterialDiffuse", Vector(0.8f, 0.8f, 0.8f));
+				c.SetUniform("clrMaterialEmissive", Vector(0, 0, 0));
+				c.SetUniform("clrMaterialSpecular", Vector(0, 0, 0));
+
+				if (SMAKWindow()->IsRenderingLight())
+				{
+					c.SetUniform("bLight", true);
+					c.SetUniform("vecLightDirection", -m_vecLightPosition.Normalized());
+					c.SetUniform("clrLightDiffuse", Vector(1, 1, 1));
+					c.SetUniform("clrLightAmbient", Vector(0.2f, 0.2f, 0.2f));
+					c.SetUniform("clrLightSpecular", Vector(1, 1, 1));
+				}
+				else
+				{
+					c.SetUniform("bLight", false);
+					c.SetUniform("bShadeBottoms", true);
+				}
+
+				if (!SMAKWindow()->IsRenderingLight())
+					c.SetUniform("clrRimLight", Vector(0.15f, 0.15f, 0.15f));
+				else
+					c.SetUniform("clrRimLight", Vector(0.05f, 0.05f, 0.05f));
+
+				c.BeginRenderVertexArray(pModel->m_aiVertexBuffers[i]);
+				c.SetPositionBuffer(pModel->PositionOffset(), pModel->Stride());
+				c.SetNormalsBuffer(pModel->NormalsOffset(), pModel->Stride());
+				c.SetTangentsBuffer(pModel->TangentsOffset(), pModel->Stride());
+				c.SetBitangentsBuffer(pModel->BitangentsOffset(), pModel->Stride());
+				c.SetTexCoordBuffer(pModel->TexCoordOffset(), pModel->Stride());
+				c.EndRenderVertexArray(pModel->m_aiVertexBufferSizes[i]);
+			}
+		}
+	}
+	else
+	{
+		for (size_t i = 0; i < SMAKWindow()->GetScene()->GetNumScenes(); i++)
+			RenderSceneNode(SMAKWindow()->GetScene()->GetScene(i));
+	}
 }
 
 void CSMAKRenderer::RenderSceneNode(CConversionSceneNode* pNode)
@@ -356,6 +463,12 @@ void CSMAKRenderer::RenderMeshInstance(CConversionMeshInstance* pMeshInstance)
 			if (!pModel->m_aiVertexBufferSizes[i])
 				continue;
 
+			CConversionMaterial* pSelectedMaterial = SceneTree()->GetSelectedMaterial();
+			CConversionMeshInstance* pSelectedMeshInstance = SceneTree()->GetSelectedMeshInstance();
+			bool bSelected = pSelectedMaterial && pSelectedMaterial == SMAKWindow()->GetScene()->GetMaterial(iMaterial);
+			if (pSelectedMeshInstance && pSelectedMeshInstance == pMeshInstance)
+				bSelected = true;
+
 			CMaterialHandle hMaterial = SMAKWindow()->GetMaterials()[iMaterial];
 			c.UseMaterial(hMaterial);
 
@@ -386,7 +499,10 @@ void CSMAKRenderer::RenderMeshInstance(CConversionMeshInstance* pMeshInstance)
 			if (!SMAKWindow()->IsRenderingAO())
 				c.SetUniform("bAO", false);
 
-			c.SetUniform("flRimLight", 0.05f);
+			if (bSelected)
+				c.SetUniform("clrRimLight", Vector(1.0f, 1.0f, 0.05f));
+			else
+				c.SetUniform("clrRimLight", Vector(0.05f, 0.05f, 0.05f));
 
 			if (SMAKWindow()->IsRenderingLight())
 			{
@@ -403,7 +519,12 @@ void CSMAKRenderer::RenderMeshInstance(CConversionMeshInstance* pMeshInstance)
 			}
 
 			if (!bTexture && !SMAKWindow()->IsRenderingLight())
-				c.SetUniform("flRimLight", 0.15f);
+			{
+				if (bSelected)
+					c.SetUniform("clrRimLight", Vector(1.0f, 1.0f, 0.15f));
+				else
+					c.SetUniform("clrRimLight", Vector(0.15f, 0.15f, 0.15f));
+			}
 
 			c.BeginRenderVertexArray(pModel->m_aiVertexBuffers[i]);
 			c.SetPositionBuffer(pModel->PositionOffset(), pModel->Stride());
@@ -582,7 +703,10 @@ void CSMAKRenderer::RenderLightSource()
 
 	CRenderingContext c(this, true);
 
-	c.Translate(SMAKWindow()->GetScene()->m_oExtends.Center());
+	CConversionMesh* pMesh = SceneTree()->GetSelectedMesh();
+	if (!pMesh)
+		c.Translate(SMAKWindow()->GetScene()->m_oExtends.Center());
+
 	c.Translate(m_vecLightPosition);
 	c.Rotate(-SMAKWindow()->GetLightYaw(), Vector(0, 1, 0));
 	c.Rotate(SMAKWindow()->GetLightPitch(), Vector(0, 0, 1));

@@ -39,6 +39,9 @@ public:
 	void							OpenMaterialEditor(class CConversionMaterial* pMaterial);
 	void							CloseMaterialEditor();
 
+	class CConversionMaterial*		GetSelectedMaterial() const;
+	class CConversionMesh*			GetSelectedMesh() const;
+	class CConversionMeshInstance*	GetSelectedMeshInstance() const;
 	size_t							GetLastSelectedMaterial() { return m_iLastSelectedMaterial; }
 
 	EVENT_CALLBACK(CSceneTreePanel, Selected);

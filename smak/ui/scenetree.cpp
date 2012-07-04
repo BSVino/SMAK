@@ -171,6 +171,33 @@ void CSceneTreePanel::CloseMaterialEditor()
 		m_hMaterialEditor.DowncastStatic<CMaterialEditor>()->Close();
 }
 
+CConversionMaterial* CSceneTreePanel::GetSelectedMaterial() const
+{
+	CTreeNodeObject<CConversionMaterial>* pMaterialNode = m_hTree->GetSelectedNode().Downcast<CTreeNodeObject<CConversionMaterial>>();
+	if (!pMaterialNode)
+		return nullptr;
+
+	return pMaterialNode->GetObject();
+}
+
+CConversionMesh* CSceneTreePanel::GetSelectedMesh() const
+{
+	CTreeNodeObject<CConversionMesh>* pMeshNode = m_hTree->GetSelectedNode().Downcast<CTreeNodeObject<CConversionMesh>>();
+	if (!pMeshNode)
+		return nullptr;
+
+	return pMeshNode->GetObject();
+}
+
+CConversionMeshInstance* CSceneTreePanel::GetSelectedMeshInstance() const
+{
+	CTreeNodeObject<CConversionMeshInstance>* pMeshInstanceNode = m_hTree->GetSelectedNode().Downcast<CTreeNodeObject<CConversionMeshInstance>>();
+	if (!pMeshInstanceNode)
+		return nullptr;
+
+	return pMeshInstanceNode->GetObject();
+}
+
 void CSceneTreePanel::SelectedCallback(const tstring& sArgs)
 {
 	if (!m_hTree->GetSelectedNode())

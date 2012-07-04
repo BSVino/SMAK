@@ -14,7 +14,7 @@ uniform float flAlpha;
 
 uniform bool bLight;
 uniform bool bShadeBottoms;
-uniform float flRimLight;
+uniform vec3 clrRimLight;
 uniform vec3 clrMaterialAmbient;
 uniform vec3 clrMaterialDiffuse;
 uniform vec3 clrMaterialEmissive;
@@ -132,8 +132,8 @@ void main()
 	}
 
 	// Add a rim light.
-	if (flRimLight > 0.0)
-		clrLight += RemapValClamped(Lerp(1-dot(vecTranslatedNormal, vecCameraDirectionNormalized), 0.8), 0.6, 1.0, 0.0, flRimLight);
+	if (LengthSqr(clrRimLight) > 0.0)
+		clrLight += (RemapValClamped(Lerp(1-dot(vecTranslatedNormal, vecCameraDirectionNormalized), 0.8), 0.6, 1.0, 0.0, 1.0) * clrRimLight);
 
 	vecOutputColor = clrDiffuseColor;
 	vecOutputColor.rgb *= clrLight;// * clrAO * clrCAO;
