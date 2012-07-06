@@ -619,7 +619,10 @@ void CSMAKRenderer::RenderUV()
 		{
 			c.SetUniform("bLight", true);
 			c.SetUniform("vecLightDirection", -m_vecLightPositionUV.Normalized());
-			c.SetUniform("clrLightDiffuse", Vector(1, 1, 1));
+			if (bTexture)
+				c.SetUniform("clrLightDiffuse", Vector(1, 1, 1));
+			else
+				c.SetUniform("clrLightDiffuse", Vector(0.6f, 0.6f, 0.6f));
 			c.SetUniform("clrLightAmbient", Vector(0.2f, 0.2f, 0.2f));
 			c.SetUniform("clrLightSpecular", Vector(1, 1, 1));
 		}
@@ -673,23 +676,54 @@ void CSMAKRenderer::RenderUV()
 
 		Vector vecOffset(-0.5f, -0.5f, 0);
 
-		for (size_t i = 0; i < SMAKWindow()->GetScene()->GetNumMeshes(); i++)
-		{
-			CConversionMesh* pMesh = SMAKWindow()->GetScene()->GetMesh(i);
-			if (!pMesh->IsVisible())
-				continue;
+		CConversionMesh* pSelectedMesh = SceneTree()->GetSelectedMesh();
 
-			CModel* pModel = CModelLibrary::GetModel(i);
+		if (pSelectedMesh)
+		{
+			size_t iSelectedMesh = ~0;
+			for (size_t i = 0; i < SMAKWindow()->GetScene()->GetNumMeshes(); i++)
+			{
+				if (SMAKWindow()->GetScene()->GetMesh(i) == pSelectedMesh)
+				{
+					iSelectedMesh = i;
+					break;
+				}
+			}
+
+			TAssert(iSelectedMesh != ~0);
+
+			CModel* pModel = CModelLibrary::GetModel(iSelectedMesh);
 
 			if (!pModel)
-				continue;
+				return;
 
 			if (!pModel->m_iVertexUVBufferSize)
-				continue;
+				return;
 
 			c.BeginRenderVertexArray(pModel->m_iVertexUVBuffer);
 			c.SetPositionBuffer(pModel->UVPositionOffset(), pModel->UVStride());
 			c.EndRenderVertexArray(pModel->m_iVertexUVBufferSize, true);
+		}
+		else
+		{
+			for (size_t i = 0; i < SMAKWindow()->GetScene()->GetNumMeshes(); i++)
+			{
+				CConversionMesh* pMesh = SMAKWindow()->GetScene()->GetMesh(i);
+				if (!pMesh->IsVisible())
+					continue;
+
+				CModel* pModel = CModelLibrary::GetModel(i);
+
+				if (!pModel)
+					continue;
+
+				if (!pModel->m_iVertexUVBufferSize)
+					continue;
+
+				c.BeginRenderVertexArray(pModel->m_iVertexUVBuffer);
+				c.SetPositionBuffer(pModel->UVPositionOffset(), pModel->UVStride());
+				c.EndRenderVertexArray(pModel->m_iVertexUVBufferSize, true);
+			}
 		}
 	}
 }

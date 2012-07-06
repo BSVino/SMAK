@@ -20,16 +20,6 @@ GNU General Public License for more details.
 #include <raytracer/raytracer.h>
 #include <textures/texturelibrary.h>
 
-#if 0
-#ifdef _DEBUG
-#define NORMAL_DEBUG
-#endif
-#endif
-
-#ifdef NORMAL_DEBUG
-#include "ui/smakwindow.h"
-#endif
-
 CTexelGenerator::CTexelGenerator(CConversionScene* pScene)
 {
 	m_pScene = pScene;
