@@ -10,6 +10,10 @@ uniform sampler2D iNormal;
 uniform bool bNormal2 = false;
 uniform sampler2D iNormal2;
 
+uniform bool bCavity = false;
+uniform sampler2D iCavity;
+float flCavityStrength = 1.0;
+
 uniform float flAlpha;
 
 uniform bool bLight;
@@ -49,6 +53,13 @@ void main()
 		clrDiffuseColor = texture(iDiffuse, vecFragmentTexCoord0);
 	else
 		clrDiffuseColor = vec4(0.8, 0.8, 0.8, 1.0);
+
+	if (bCavity)
+	{
+		vec4 clrCavity = texture(iCavity, vecFragmentTexCoord0);
+		clrCavity = (clrCavity - 0.5) * flCavityStrength + 0.5;
+		clrDiffuseColor = clrDiffuseColor * (clrDiffuseColor + (2.0*clrCavity)*(1.0-clrDiffuseColor));
+	}
 
 	if (!bNormal && !bNormal2)
 		vecTangentNormal = vec3(0.0, 0.0, 1.0);

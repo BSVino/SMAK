@@ -25,6 +25,7 @@ set (SMAK_SOURCES
 set (SMAK_SOURCES_CRUNCH
 	crunch/ao.cpp
 	crunch/ao_raytrace.cpp
+	crunch/cavity.cpp
 	crunch/crunch.cpp
 	crunch/normal.cpp
 )
@@ -38,6 +39,7 @@ set (SMAK_SOURCES_UI
 	ui/scenetree.cpp
 	ui/aogenerator.cpp
 	ui/buttonpanel.cpp
+	ui/cavitygenerator.cpp
 	ui/combogenerator.cpp
 	ui/normalgenerator.cpp
 	ui/progressbar.cpp

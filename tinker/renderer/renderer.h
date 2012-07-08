@@ -159,6 +159,7 @@ public:
 	static void		UnloadTextureData(Color* pData);
 
 	static void		ReadTextureFromGL(CTextureHandle hTexture, Vector* pvecData);
+	static void		ReadTextureFromGL(CTextureHandle hTexture, Color* pclrData);
 
 	static void		WriteTextureToFile(size_t iTexture, tstring sFilename);
 	static void		WriteTextureToFile(Color* pclrData, int w, int h, tstring sFilename);

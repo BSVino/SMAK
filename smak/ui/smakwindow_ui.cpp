@@ -39,6 +39,7 @@ GNU General Public License for more details.
 #include "combogenerator.h"
 #include "aogenerator.h"
 #include "normalgenerator.h"
+#include "cavitygenerator.h"
 
 using namespace glgui;
 
@@ -63,10 +64,12 @@ void CSMAKWindow::InitUI()
 	pView->AddSubmenu("Toggle texture", this, TextureToggle);
 	pView->AddSubmenu("Toggle normal map", this, NormalToggle);
 	pView->AddSubmenu("Toggle AO map", this, AOToggle);
+	pView->AddSubmenu("Toggle cavity map", this, CavityToggle);
 
 	pTools->AddSubmenu("Generate all maps", this, GenerateCombo);
 	pTools->AddSubmenu("Generate ambient occlusion map", this, GenerateAO);
 	pTools->AddSubmenu("Generate normal from texture", this, GenerateNormal);
+	pTools->AddSubmenu("Generate cavity from normal", this, GenerateCavity);
 
 	pHelp->AddSubmenu("Help", this, Help);
 	pHelp->AddSubmenu("About SMAK", this, About);
@@ -88,6 +91,7 @@ void CSMAKWindow::InitUI()
 	m_hTexture = hBottomButtons->AddButton(new CPictureButton("Tex", GetSMAKRenderer()->GetTextureTexture(), true), "Toggle Texture", false, this, Texture);
 	m_hNormal = hBottomButtons->AddButton(new CPictureButton("Nrml", GetSMAKRenderer()->GetNormalTexture(), true), "Toggle Normal Map", false, this, Normal);
 	m_hAO = hBottomButtons->AddButton(new CPictureButton("AO", GetSMAKRenderer()->GetAOTexture(), true), "Toggle AO Map", false, this, AO);
+	m_hCavity = hBottomButtons->AddButton(new CPictureButton("Cvty", GetSMAKRenderer()->GetNormalTexture(), true), "Toggle Cavity Map", false, this, Cavity);
 
 	CRootPanel::Get()->AddControl(pBottomButtons);
 
@@ -223,6 +227,11 @@ void CSMAKWindow::ColorAOCallback(const tstring& sArgs)
 #endif
 }
 
+void CSMAKWindow::CavityCallback(const tstring& sArgs)
+{
+	SetDisplayCavity(m_hCavity->GetState());
+}
+
 void CSMAKWindow::LightToggleCallback(const tstring& sArgs)
 {
 	SetDisplayLight(!m_bDisplayLight);
@@ -248,6 +257,11 @@ void CSMAKWindow::ColorAOToggleCallback(const tstring& sArgs)
 	SetDisplayColorAO(!m_bDisplayColorAO);
 }
 
+void CSMAKWindow::CavityToggleCallback(const tstring& sArgs)
+{
+	SetDisplayCavity(!m_bDisplayCavity);
+}
+
 void CSMAKWindow::GenerateComboCallback(const tstring& sArgs)
 {
 	CComboGeneratorPanel::Open(&m_Scene);
@@ -268,6 +282,11 @@ void CSMAKWindow::GenerateColorAOCallback(const tstring& sArgs)
 void CSMAKWindow::GenerateNormalCallback(const tstring& sArgs)
 {
 	CNormalPanel::Open(&m_Scene);
+}
+
+void CSMAKWindow::GenerateCavityCallback(const tstring& sArgs)
+{
+	CCavityPanel::Open(&m_Scene);
 }
 
 void CSMAKWindow::HelpCallback(const tstring& sArgs)

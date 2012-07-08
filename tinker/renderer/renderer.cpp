@@ -926,6 +926,19 @@ void CRenderer::ReadTextureFromGL(CTextureHandle hTexture, Vector* pvecData)
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+void CRenderer::ReadTextureFromGL(CTextureHandle hTexture, Color* pclrData)
+{
+	TAssert(hTexture.IsValid());
+	if (!hTexture.IsValid())
+		return;
+
+	glBindTexture(GL_TEXTURE_2D, hTexture->m_iGLID);
+
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pclrData);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 void CRenderer::WriteTextureToFile(size_t iTexture, tstring sFilename)
 {
 	glBindTexture(GL_TEXTURE_2D, iTexture);

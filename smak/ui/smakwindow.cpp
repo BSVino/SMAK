@@ -343,6 +343,12 @@ void CSMAKWindow::SetDisplayColorAO(bool bColorAO)
 	m_hColorAO->SetState(bColorAO, false);
 }
 
+void CSMAKWindow::SetDisplayCavity(bool bCavity)
+{
+	m_bDisplayCavity = bCavity;
+	m_hCavity->SetState(bCavity, false);
+}
+
 // Returns a normalized vector from the specified image file with dimensions iNormalWidth by iNormalHeight
 // at x, y if the image were resampled to iSampleWidth, iSampleHeight
 Vector NormalSample(const tvector<Vector>& vecNormal, size_t iNormalWidth, size_t iNormalHeight, size_t x, size_t y, size_t iSampleWidth, size_t iSampleHeight)
@@ -376,26 +382,34 @@ Vector NormalSample(const tvector<Vector>& vecNormal, size_t iNormalWidth, size_
 	return ((xy*flYLerpInv + xY*flYLerp)*flXLerpInv + (Xy*flYLerpInv + XY*flYLerp)*flXLerp).Normalized();
 }
 
-void CSMAKWindow::SaveNormal(size_t iMaterial, const tstring& sFilename)
+bool CSMAKWindow::GetCombinedNormal(CMaterialHandle hMaterial, tvector<Color>& aclrNormal, size_t& iWidth, size_t& iHeight)
 {
-	CMaterialHandle hMaterial = GetMaterials()[iMaterial];
-
 	CShader* pShader = CShaderLibrary::GetShader(hMaterial->m_sShader);
 	size_t iNormal = pShader->FindTextureByUniform("iNormal");
 	size_t iNormal2 = pShader->FindTextureByUniform("iNormal2");
 
 	if (iNormal == ~0 && iNormal2 == ~0)
-		return;
+		return false;
 
 	// If we only have one, spit it out as is.
 	if (iNormal == ~0 || iNormal2 == ~0)
 	{
 		if (iNormal != ~0)
-			CRenderer::WriteTextureToFile(hMaterial->m_ahTextures[iNormal]->m_iGLID, sFilename);
+		{
+			iWidth = hMaterial->m_ahTextures[iNormal]->m_iWidth;
+			iHeight = hMaterial->m_ahTextures[iNormal]->m_iHeight;
+			aclrNormal.resize(iWidth*iHeight);
+			CRenderer::ReadTextureFromGL(hMaterial->m_ahTextures[iNormal], aclrNormal.data());
+		}
 		else
-			CRenderer::WriteTextureToFile(hMaterial->m_ahTextures[iNormal2]->m_iGLID, sFilename);
+		{
+			iWidth = hMaterial->m_ahTextures[iNormal2]->m_iWidth;
+			iHeight = hMaterial->m_ahTextures[iNormal2]->m_iHeight;
+			aclrNormal.resize(iWidth*iHeight);
+			CRenderer::ReadTextureFromGL(hMaterial->m_ahTextures[iNormal2], aclrNormal.data());
+		}
 
-		return;
+		return true;
 	}
 
 	CTextureHandle hNormal = hMaterial->m_ahTextures[iNormal];
@@ -404,11 +418,21 @@ void CSMAKWindow::SaveNormal(size_t iMaterial, const tstring& sFilename)
 	if (!hNormal || !hNormal2)
 	{
 		if (hNormal.IsValid())
-			CRenderer::WriteTextureToFile(hNormal->m_iGLID, sFilename);
+		{
+			iWidth = hNormal->m_iWidth;
+			iHeight = hNormal->m_iHeight;
+			aclrNormal.resize(iWidth*iHeight);
+			CRenderer::ReadTextureFromGL(hNormal, aclrNormal.data());
+		}
 		else
-			CRenderer::WriteTextureToFile(hNormal2->m_iGLID, sFilename);
+		{
+			iWidth = hNormal2->m_iWidth;
+			iHeight = hNormal2->m_iHeight;
+			aclrNormal.resize(iWidth*iHeight);
+			CRenderer::ReadTextureFromGL(hNormal2, aclrNormal.data());
+		}
 
-		return;
+		return true;
 	}
 
 	tvector<Vector> avecNormals;
@@ -447,6 +471,19 @@ void CSMAKWindow::SaveNormal(size_t iMaterial, const tstring& sFilename)
 			aclrMergedNormalValues[iTexel] = vecMergedNormal;
 		}
 	}
+
+	return true;
+}
+
+void CSMAKWindow::SaveNormal(size_t iMaterial, const tstring& sFilename)
+{
+	CMaterialHandle hMaterial = GetMaterials()[iMaterial];
+
+	size_t iTotalWidth, iTotalHeight;
+
+	tvector<Color> aclrMergedNormalValues;
+	if (!GetCombinedNormal(hMaterial, aclrMergedNormalValues, iTotalWidth, iTotalHeight))
+		return;
 
 	CRenderer::WriteTextureToFile(aclrMergedNormalValues.data(), iTotalWidth, iTotalHeight, sFilename);
 }

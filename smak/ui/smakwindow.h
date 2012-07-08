@@ -96,15 +96,18 @@ public:
 	EVENT_CALLBACK(CSMAKWindow, Normal);
 	EVENT_CALLBACK(CSMAKWindow, AO);
 	EVENT_CALLBACK(CSMAKWindow, ColorAO);
+	EVENT_CALLBACK(CSMAKWindow, Cavity);
 	EVENT_CALLBACK(CSMAKWindow, LightToggle);
 	EVENT_CALLBACK(CSMAKWindow, TextureToggle);
 	EVENT_CALLBACK(CSMAKWindow, NormalToggle);
 	EVENT_CALLBACK(CSMAKWindow, AOToggle);
 	EVENT_CALLBACK(CSMAKWindow, ColorAOToggle);
+	EVENT_CALLBACK(CSMAKWindow, CavityToggle);
 	EVENT_CALLBACK(CSMAKWindow, GenerateCombo);
 	EVENT_CALLBACK(CSMAKWindow, GenerateAO);
 	EVENT_CALLBACK(CSMAKWindow, GenerateColorAO);
 	EVENT_CALLBACK(CSMAKWindow, GenerateNormal);
+	EVENT_CALLBACK(CSMAKWindow, GenerateCavity);
 	EVENT_CALLBACK(CSMAKWindow, Help);
 	EVENT_CALLBACK(CSMAKWindow, Register);
 	EVENT_CALLBACK(CSMAKWindow, About);
@@ -125,7 +128,9 @@ public:
 	void					SetDisplayNormal(bool bNormal);
 	void					SetDisplayAO(bool bAO);
 	void					SetDisplayColorAO(bool bAO);
+	void					SetDisplayCavity(bool bCavity);
 
+	bool					GetCombinedNormal(CMaterialHandle hMaterial, tvector<Color>& aclrNormal, size_t& iWidth, size_t& iHeight);
 	void					SaveNormal(size_t iMaterial, const tstring& sFilename);
 
 	int						GetWindowWidth() { return (int)m_iWindowWidth; };
@@ -160,6 +165,7 @@ public:
 	bool					IsRenderingNormal() { return m_bDisplayNormal; }
 	bool					IsRenderingAO() { return m_bDisplayAO; }
 	bool					IsRenderingColorAO() { return m_bDisplayColorAO; }
+	bool					IsRenderingCavity() { return m_bDisplayCavity; }
 
 	void					BeginProgress();
 	void					SetAction(const tstring& sAction, size_t iTotalProgress);
@@ -207,6 +213,7 @@ protected:
 	bool					m_bDisplayNormal;
 	bool					m_bDisplayAO;
 	bool					m_bDisplayColorAO;
+	bool					m_bDisplayCavity;
 
 	// Controls
 	glgui::CControl<glgui::CButton>			m_hRender3D;
@@ -221,6 +228,7 @@ protected:
 	glgui::CControl<glgui::CButton>			m_hNormal;
 	glgui::CControl<glgui::CButton>			m_hAO;
 	glgui::CControl<glgui::CButton>			m_hColorAO;
+	glgui::CControl<glgui::CButton>			m_hCavity;
 
 	static CSMAKWindow*		s_pSMAKWindow;
 };
