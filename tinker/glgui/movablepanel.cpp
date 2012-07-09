@@ -110,7 +110,8 @@ void CMovablePanel::Layout()
 		m_hVerticalScrollBar->SetPos(GetWidth()-HANDLE_SIZE, HEADER_HEIGHT);
 	}
 
-	m_flNonMinimizedHeight = GetHeight();
+	if (!m_bMinimized)
+		m_flNonMinimizedHeight = GetHeight();
 }
 
 void CMovablePanel::Think()
