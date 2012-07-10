@@ -57,7 +57,7 @@ public:
 	void					SetGroundOcclusion(bool bGroundOcclusion) { m_bGroundOcclusion = bGroundOcclusion; };
 	void					SetRayFalloff(float flRayFalloff) { m_flRayFalloff = flRayFalloff; };
 
-	void					SetWorkListener(IWorkListener* pListener) { m_pWorkListener = pListener; };
+	void					SetWorkListener(IWorkListener* pListener);
 
 	void					ShadowMapSetupScene();
 	void					ShadowMapSetupSceneNode(CConversionSceneNode* pNode, tvector<float>& aflVerts, bool bDepth);

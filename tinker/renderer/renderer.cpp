@@ -838,7 +838,7 @@ size_t CRenderer::LoadTextureIntoGL(Color* pclrData, int x, int y, int iClamp)
 	return iGLId;
 }
 
-size_t CRenderer::LoadTextureIntoGL(Vector* pvecData, int x, int y, int iClamp)
+size_t CRenderer::LoadTextureIntoGL(Vector* pvecData, int x, int y, int iClamp, bool bMipMaps)
 {
 	GLuint iGLId;
 	glGenTextures(1, &iGLId);
@@ -853,13 +853,10 @@ size_t CRenderer::LoadTextureIntoGL(Vector* pvecData, int x, int y, int iClamp)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	}
 
-	gluBuild2DMipmaps(GL_TEXTURE_2D,
-		3,
-		x,
-		y,
-		GL_RGB,
-		GL_FLOAT,
-		pvecData);
+	if (bMipMaps)
+		gluBuild2DMipmaps(GL_TEXTURE_2D, 3, x, y, GL_RGB, GL_FLOAT, pvecData);
+	else
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_FLOAT, pvecData);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 

@@ -45,11 +45,11 @@ CTextureHandle CTextureLibrary::AddTexture(const tstring& sTexture, int iClamp)
 	return CTextureHandle(sTexture, AddAsset(sTexture, iClamp));
 }
 
-CTextureHandle CTextureLibrary::AddTexture(Vector* vecColors, size_t iWidth, size_t iHeight)
+CTextureHandle CTextureLibrary::AddTexture(Vector* vecColors, size_t iWidth, size_t iHeight, bool bMipMaps)
 {
 	static int i = 0;
 	tstring sName = sprintf("[generated vector texture %d]", i++);
-	return CTextureHandle(sName, AddAsset(sName, vecColors, iWidth, iHeight));
+	return CTextureHandle(sName, AddAsset(sName, vecColors, iWidth, iHeight, bMipMaps));
 }
 
 CTexture* CTextureLibrary::AddAsset(const tstring& sTexture, int iClamp)
@@ -75,14 +75,14 @@ CTexture* CTextureLibrary::AddAsset(const tstring& sTexture, int iClamp)
 	return &Get()->m_aTextures[sTexture];
 }
 
-CTexture* CTextureLibrary::AddAsset(const tstring& sTexture, Vector* vecColors, size_t iWidth, size_t iHeight)
+CTexture* CTextureLibrary::AddAsset(const tstring& sTexture, Vector* vecColors, size_t iWidth, size_t iHeight, bool bMipMaps)
 {
 	if (!vecColors)
 		return nullptr;
 
 	CTexture oTex;
 	
-	oTex.m_iGLID = CRenderer::LoadTextureIntoGL(vecColors, iWidth, iHeight);
+	oTex.m_iGLID = CRenderer::LoadTextureIntoGL(vecColors, iWidth, iHeight, 0, bMipMaps);
 	oTex.m_iWidth = iWidth;
 	oTex.m_iHeight = iHeight;
 

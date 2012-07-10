@@ -34,6 +34,19 @@ void DrawTexture(size_t iTexture, float flScale, CRenderingContext& c);
 
 CVar ao_debug("ao_debug", "0");
 
+// If there's always at least a dummy then there's no need to "if (m_pWorkListener)" all the time.
+// The cost of the vtable call is less than the cost of a cache miss, but usually it's not null anyway.
+class CDummyAOListener : public IWorkListener
+{
+public:
+	void			BeginProgress() {};
+	void			SetAction(const tstring& pszAction, size_t iTotalProgress) {};
+	void			WorkProgress(size_t iProgress, bool bForceDraw = false) {};
+	void			EndProgress() {};
+};
+
+static CDummyAOListener g_oListener;
+
 CAOGenerator::CAOGenerator(CConversionScene* pScene)
 {
 	m_eAOMethod = AOMETHOD_NONE;
@@ -57,7 +70,7 @@ CAOGenerator::CAOGenerator(CConversionScene* pScene)
 
 	SetRenderPreviewViewport(0, 0, 100, 100);
 
-	m_pWorkListener = NULL;
+	m_pWorkListener = &g_oListener;
 
 	m_bIsGenerating = false;
 	m_bDoneGenerating = false;
@@ -118,6 +131,14 @@ void CAOGenerator::SetRenderPreviewViewport(int x, int y, int w, int h)
 	// Pixel reading buffer
 	m_iPixelDepth = 4;
 	m_pvecPixels = new Vector4D[m_iRPVW*m_iRPVH];
+}
+
+void CAOGenerator::SetWorkListener(IWorkListener* pListener)
+{
+	m_pWorkListener = pListener;
+
+	if (!m_pWorkListener)
+		m_pWorkListener = &g_oListener;
 }
 
 void CAOGenerator::ShadowMapSetupScene()
@@ -260,14 +281,13 @@ void CAOGenerator::RenderSetupSceneNode(CConversionSceneNode* pNode, tvector<tve
 
 void CAOGenerator::Generate()
 {
+	double flTimeStarted = Application()->GetTime();
+
 	if (!m_eAOMethod)
 		return;
 
-	if (m_pWorkListener)
-	{
-		m_pWorkListener->BeginProgress();
-		m_pWorkListener->SetAction("Setting up", 0);
-	}
+	m_pWorkListener->BeginProgress();
+	m_pWorkListener->SetAction("Setting up", 0);
 
 	m_bIsGenerating = true;
 	m_bStopGenerating = false;
@@ -300,8 +320,7 @@ void CAOGenerator::Generate()
 
 	size_t i;
 
-	if (m_pWorkListener)
-		m_pWorkListener->SetAction("Averaging reads", m_iWidth*m_iHeight);
+	m_pWorkListener->SetAction("Averaging reads", m_iWidth*m_iHeight);
 
 	// Average out all of the reads.
 	for (i = 0; i < m_iWidth*m_iHeight; i++)
@@ -318,8 +337,7 @@ void CAOGenerator::Generate()
 		else
 			m_avecShadowValues[i] = Vector(0,0,0);
 
-		if (m_pWorkListener)
-			m_pWorkListener->WorkProgress(i);
+		m_pWorkListener->WorkProgress(i);
 	}
 
 	if (m_eAOMethod == AOMETHOD_RENDER || m_eAOMethod == AOMETHOD_SHADOWMAP)
@@ -350,8 +368,11 @@ void CAOGenerator::Generate()
 	m_bIsGenerating = false;
 
 	// One last call to let them know we're done.
-	if (m_pWorkListener)
-		m_pWorkListener->EndProgress();
+	m_pWorkListener->EndProgress();
+
+	double flTimeEnded = Application()->GetTime();
+	double flTimePassed = flTimeEnded - flTimeStarted;
+	TMsg(sprintf("AO generation completed in %f seconds\n", flTimePassed));
 }
 
 void CAOGenerator::GenerateShadowMaps()
@@ -394,8 +415,7 @@ void CAOGenerator::GenerateShadowMaps()
 
 	size_t iSamples = (size_t)sqrt((float)m_iSamples);
 
-	if (m_pWorkListener)
-		m_pWorkListener->SetAction("Taking exposures", m_iSamples);
+	m_pWorkListener->SetAction("Taking exposures", m_iSamples);
 
 	for (size_t x = 0; x <= iSamples; x++)
 	{
@@ -502,8 +522,7 @@ void CAOGenerator::GenerateShadowMaps()
 			flProcessSceneRead += (SMAKWindow()->GetTime() - flTimeBefore);
 			flTimeBefore = SMAKWindow()->GetTime();
 
-			if (m_pWorkListener)
-				m_pWorkListener->WorkProgress(x*iSamples + y);
+			m_pWorkListener->WorkProgress(x*iSamples + y);
 
 			flProgress += (SMAKWindow()->GetTime() - flTimeBefore);
 
@@ -523,20 +542,19 @@ void CAOGenerator::GenerateShadowMaps()
 	{
 		size_t iBufferSize = m_iWidth*m_iHeight;
 
-		if (m_pWorkListener)
-			m_pWorkListener->SetAction("Reading pixels", iBufferSize);
+		m_pWorkListener->SetAction("Reading pixels", iBufferSize);
 
 		for (size_t p = 0; p < iBufferSize; p++)
 		{
-			if (m_pvecPixels[p].w == 0.0f)
+			Vector4D& vecPixel = m_pvecPixels[p];
+			if (vecPixel.w == 0.0f)
 				continue;
 
-			m_avecShadowValues[p].x = m_pvecPixels[p].x;
-			m_aiShadowReads[p] = (size_t)m_pvecPixels[p].w;
+			m_avecShadowValues[p].x = vecPixel.x;
+			m_aiShadowReads[p] = (size_t)vecPixel.w;
 			m_bPixelMask[p] = true;
 
-			if (m_pWorkListener)
-				m_pWorkListener->WorkProgress(p);
+			m_pWorkListener->WorkProgress(p);
 		}
 	}
 
@@ -591,8 +609,7 @@ void CAOGenerator::GenerateByTexel()
 
 	if (m_eAOMethod == AOMETHOD_RAYTRACE)
 	{
-		if (m_pWorkListener)
-			m_pWorkListener->SetAction("Building tree", 0);
+		m_pWorkListener->SetAction("Building tree", 0);
 
 		pTracer = new raytrace::CRaytracer(m_pScene);
 		pTracer->AddMeshesFromNode(m_pScene->GetScene(0));
@@ -601,13 +618,10 @@ void CAOGenerator::GenerateByTexel()
 		srand((unsigned int)time(0));
 	}
 
-	if (m_pWorkListener)
-	{
-		if (m_eAOMethod == AOMETHOD_RAYTRACE && GetNumberOfProcessors() > 1)
-			m_pWorkListener->SetAction("Dispatching jobs", (size_t)(flTotalArea*m_iWidth*m_iHeight));
-		else
-			m_pWorkListener->SetAction("Rendering", (size_t)(flTotalArea*m_iWidth*m_iHeight));
-	}
+	if (m_eAOMethod == AOMETHOD_RAYTRACE && GetNumberOfProcessors() > 1)
+		m_pWorkListener->SetAction("Dispatching jobs", (size_t)(flTotalArea*m_iWidth*m_iHeight));
+	else
+		m_pWorkListener->SetAction("Rendering", (size_t)(flTotalArea*m_iWidth*m_iHeight));
 
 	size_t iRendered = 0;
 
@@ -811,8 +825,7 @@ void CAOGenerator::GenerateTriangleByTexel(CConversionMeshInstance* pMeshInstanc
 			m_aiShadowReads[iTexel]++;
 			m_bPixelMask[iTexel] = true;
 
-			if (m_pWorkListener)
-				m_pWorkListener->WorkProgress(++iRendered);
+			m_pWorkListener->WorkProgress(++iRendered);
 
 			if (m_bStopGenerating)
 				break;
@@ -974,8 +987,7 @@ void CAOGenerator::Bleed()
 {
 	bool* abPixelMask = (bool*)malloc(m_iWidth*m_iHeight*sizeof(bool));
 
-	if (m_pWorkListener)
-		m_pWorkListener->SetAction("Bleeding edges", m_iBleed);
+	m_pWorkListener->SetAction("Bleeding edges", m_iBleed);
 
 	for (size_t i = 0; i < m_iBleed; i++)
 	{
@@ -1056,8 +1068,7 @@ void CAOGenerator::Bleed()
 		for (size_t p = 0; p < m_iWidth*m_iHeight; p++)
 			m_bPixelMask[p] |= abPixelMask[p];
 
-		if (m_pWorkListener)
-			m_pWorkListener->WorkProgress(i);
+		m_pWorkListener->WorkProgress(i);
 
 		if (m_bStopGenerating)
 			break;
@@ -1097,12 +1108,15 @@ CTextureHandle CAOGenerator::GenerateTexture(bool bInMedias)
 				size_t iBufferSize = m_iWidth*m_iHeight;
 				for (size_t p = 0; p < iBufferSize; p++)
 				{
-					if (m_pvecPixels[p].w == 0.0f)
-						avecShadowValues[p].x = 0;
-					else
-						avecShadowValues[p].x = m_pvecPixels[p].x/m_pvecPixels[p].w;
+					Vector4D& vecPixel = m_pvecPixels[p];
+					Vector& vecShadowValue = avecShadowValues[p];
 
-					avecShadowValues[p].y = avecShadowValues[p].z = avecShadowValues[p].x;
+					if (vecPixel.w == 0.0f)
+						vecShadowValue.x = 0;
+					else
+						vecShadowValue.x = vecPixel.x/vecPixel.w;
+
+					vecShadowValue.y = vecShadowValue.z = vecShadowValue.x;
 				}
 			}
 		}
@@ -1129,7 +1143,7 @@ CTextureHandle CAOGenerator::GenerateTexture(bool bInMedias)
 		}
 	}
 
-	return CTextureLibrary::AddTexture(avecShadowValues, m_iWidth, m_iHeight);
+	return CTextureLibrary::AddTexture(avecShadowValues, m_iWidth, m_iHeight, !bInMedias);
 }
 
 void CAOGenerator::SaveToFile(const tchar *pszFilename)
