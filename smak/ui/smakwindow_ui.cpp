@@ -91,7 +91,7 @@ void CSMAKWindow::InitUI()
 	m_hTexture = hBottomButtons->AddButton(new CPictureButton("Tex", GetSMAKRenderer()->GetTextureTexture(), true), "Toggle Texture", false, this, Texture);
 	m_hNormal = hBottomButtons->AddButton(new CPictureButton("Nrml", GetSMAKRenderer()->GetNormalTexture(), true), "Toggle Normal Map", false, this, Normal);
 	m_hAO = hBottomButtons->AddButton(new CPictureButton("AO", GetSMAKRenderer()->GetAOTexture(), true), "Toggle AO Map", false, this, AO);
-	m_hCavity = hBottomButtons->AddButton(new CPictureButton("Cvty", GetSMAKRenderer()->GetNormalTexture(), true), "Toggle Cavity Map", false, this, Cavity);
+	m_hCavity = hBottomButtons->AddButton(new CPictureButton("Cvty", GetSMAKRenderer()->GetAOTexture(), true), "Toggle Cavity Map", false, this, Cavity);
 
 	CRootPanel::Get()->AddControl(pBottomButtons);
 
