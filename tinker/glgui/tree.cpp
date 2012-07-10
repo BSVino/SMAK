@@ -42,6 +42,9 @@ CTree::CTree(const CMaterialHandle& hArrowMaterial, const CMaterialHandle& hEdit
 	m_pfnDroppedCallback = NULL;
 	m_pDroppedListener = NULL;
 
+	m_pfnConfirmedCallback = nullptr;
+	m_pConfirmedListener = nullptr;
+
 	m_bMouseDown = false;
 	m_bDroppable = false;
 
