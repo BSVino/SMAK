@@ -64,6 +64,7 @@ void CSMAKRenderer::Render()
 		m_flCameraOrthoHeight = SMAKWindow()->GetCameraUVZoom();
 		m_vecCameraPosition.x = SMAKWindow()->GetCameraUVX();
 		m_vecCameraPosition.y = SMAKWindow()->GetCameraUVY();
+		m_vecCameraPosition.z = 50;
 
 		m_vecCameraDirection = Vector(0, 0, -1);
 		m_vecCameraUp = Vector(0, 1, 0);
@@ -631,7 +632,7 @@ void CSMAKRenderer::RenderUV()
 			if (bTexture)
 				c.SetUniform("clrLightDiffuse", Vector(1, 1, 1));
 			else
-				c.SetUniform("clrLightDiffuse", Vector(0.6f, 0.6f, 0.6f));
+				c.SetUniform("clrLightDiffuse", Vector(0.8f, 0.8f, 0.8f));
 			c.SetUniform("clrLightAmbient", Vector(0.2f, 0.2f, 0.2f));
 			c.SetUniform("clrLightSpecular", Vector(1, 1, 1));
 		}
