@@ -616,7 +616,8 @@ void CLabel::ComputeLines(float w, float h)
 				iChar += 7;
 
 				aSectionStack.pop_back();
-				oSection = aSectionStack.back();
+				if (aSectionStack.size())
+					oSection = aSectionStack.back();
 
 				iLastBreak = iChar;
 			}
@@ -664,7 +665,8 @@ void CLabel::ComputeLines(float w, float h)
 				iChar += 8;
 
 				aSectionStack.pop_back();
-				oSection = aSectionStack.back();
+				if (aSectionStack.size())
+					oSection = aSectionStack.back();
 
 				iLastBreak = iChar;
 			}
@@ -704,7 +706,8 @@ void CLabel::ComputeLines(float w, float h)
 				iChar += 7;
 
 				aSectionStack.pop_back();
-				oSection = aSectionStack.back();
+				if (aSectionStack.size())
+					oSection = aSectionStack.back();
 
 				iLastBreak = iChar;
 			}
