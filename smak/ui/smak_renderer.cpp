@@ -621,6 +621,9 @@ void CSMAKRenderer::RenderUV()
 		c.SetUniform("bNormal2", bNormal2);
 		c.SetUniform("bCavity", bCavity);
 
+		if (!SMAKWindow()->IsRenderingAO())
+			c.SetUniform("bAO", false);
+
 		if (SMAKWindow()->IsRenderingLight())
 		{
 			c.SetUniform("bLight", true);

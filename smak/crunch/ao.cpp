@@ -372,8 +372,9 @@ void CAOGenerator::GenerateShadowMaps()
 
 	CRenderingContext c(SMAKRenderer());
 
-	// Clear red so that we can pick out later what we want when we're reading pixels.
-	c.ClearColor(Color(255, 0, 0, 0));
+	c.UseFrameBuffer(&m_oAOFB);
+
+	c.ClearColor(Color(0, 0, 0, 0));
 
 	c.SetDepthFunction(DF_LEQUAL);
 	c.SetDepthTest(true);
@@ -494,6 +495,7 @@ void CAOGenerator::GenerateShadowMaps()
 				c.UseProgram("ao");
 				c.SetViewport(Rect(iShadowMapSize/2+m_iWidth, 0, m_iWidth, m_iHeight));
 				c.SetUniform("iAOMap", 0);
+				c.SetBlend(BLEND_ALPHA);
 				DrawTexture(m_oAOFB.m_iMap, 1, c);
 			}
 
@@ -546,7 +548,6 @@ void CAOGenerator::GenerateShadowMaps()
 void CAOGenerator::AccumulateTexture(size_t iTexture)
 {
 	CRenderingContext c(SMAKRenderer(), true);
-	c.ClearDepth();
 
 	c.UseProgram("quad");
 	c.SetDepthTest(false);
