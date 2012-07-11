@@ -90,6 +90,9 @@ void LoadMesh(CConversionScene* pScene, size_t iMesh)
 	// Reserve space for n+1, the last one represents the default material.
 	g_aaflData.resize(pScene->GetNumMaterials()+1);
 
+	tvector<Vector> avecPoints;
+	tvector<size_t> aiPoints;
+
 	CConversionMesh* pMesh = pScene->GetMesh(iMesh);
 
 	for (size_t j = 0; j < pMesh->GetNumFaces(); j++)
@@ -111,10 +114,6 @@ void LoadMesh(CConversionScene* pScene, size_t iMesh)
 			CConversionVertex* pVertex1 = pFace->GetVertex(k-1);
 			CConversionVertex* pVertex2 = pFace->GetVertex(k);
 
-			AddVertex(iMaterial, pMesh->GetVertex(pVertex0->v), pMesh->GetNormal(pVertex0->vn), pMesh->GetTangent(pVertex0->vt), pMesh->GetBitangent(pVertex0->vb), pMesh->GetUV(pVertex0->vu));
-			AddVertex(iMaterial, pMesh->GetVertex(pVertex1->v), pMesh->GetNormal(pVertex1->vn), pMesh->GetTangent(pVertex1->vt), pMesh->GetBitangent(pVertex1->vb), pMesh->GetUV(pVertex1->vu));
-			AddVertex(iMaterial, pMesh->GetVertex(pVertex2->v), pMesh->GetNormal(pVertex2->vn), pMesh->GetTangent(pVertex2->vt), pMesh->GetBitangent(pVertex2->vb), pMesh->GetUV(pVertex2->vu));
-
 			AddWireframe(pMesh->GetVertex(pVertex1->v), pMesh->GetNormal(pVertex1->vn), pMesh->GetVertex(pVertex2->v), pMesh->GetNormal(pVertex2->vn));
 			AddUV(pMesh->GetUV(pVertex1->vu), pMesh->GetUV(pVertex2->vu));
 		}
@@ -122,6 +121,47 @@ void LoadMesh(CConversionScene* pScene, size_t iMesh)
 		CConversionVertex* pLastVertex = pFace->GetVertex(pFace->GetNumVertices()-1);
 		AddWireframe(pMesh->GetVertex(pLastVertex->v), pMesh->GetNormal(pLastVertex->vn), pMesh->GetVertex(pVertex0->v), pMesh->GetNormal(pVertex0->vn));
 		AddUV(pMesh->GetUV(pLastVertex->vu), pMesh->GetUV(pVertex0->vu));
+
+		avecPoints.clear();
+		aiPoints.clear();
+
+		for (size_t t = 0; t < pFace->GetNumVertices(); t++)
+		{
+			avecPoints.push_back(pMesh->GetVertex(pFace->GetVertex(t)->v));
+			aiPoints.push_back(t);
+		}
+
+		CConversionVertex* pVertex2;
+
+		while (avecPoints.size() > 3)
+		{
+			size_t iEar = FindEar(avecPoints);
+			size_t iLast = iEar==0?avecPoints.size()-1:iEar-1;
+			size_t iNext = iEar==avecPoints.size()-1?0:iEar+1;
+
+			pVertex0 = pFace->GetVertex(aiPoints[iLast]);
+			pVertex1 = pFace->GetVertex(aiPoints[iEar]);
+			pVertex2 = pFace->GetVertex(aiPoints[iNext]);
+
+			AddVertex(iMaterial, pMesh->GetVertex(pVertex0->v), pMesh->GetNormal(pVertex0->vn), pMesh->GetTangent(pVertex0->vt), pMesh->GetBitangent(pVertex0->vb), pMesh->GetUV(pVertex0->vu));
+			AddVertex(iMaterial, pMesh->GetVertex(pVertex1->v), pMesh->GetNormal(pVertex1->vn), pMesh->GetTangent(pVertex1->vt), pMesh->GetBitangent(pVertex1->vb), pMesh->GetUV(pVertex1->vu));
+			AddVertex(iMaterial, pMesh->GetVertex(pVertex2->v), pMesh->GetNormal(pVertex2->vn), pMesh->GetTangent(pVertex2->vt), pMesh->GetBitangent(pVertex2->vb), pMesh->GetUV(pVertex2->vu));
+
+			avecPoints.erase(avecPoints.begin()+iEar);
+			aiPoints.erase(aiPoints.begin()+iEar);
+		}
+
+		TAssert(aiPoints.size() == 3);
+		if (aiPoints.size() != 3)
+			continue;
+
+		pVertex0 = pFace->GetVertex(aiPoints[0]);
+		pVertex1 = pFace->GetVertex(aiPoints[1]);
+		pVertex2 = pFace->GetVertex(aiPoints[2]);
+
+		AddVertex(iMaterial, pMesh->GetVertex(pVertex0->v), pMesh->GetNormal(pVertex0->vn), pMesh->GetTangent(pVertex0->vt), pMesh->GetBitangent(pVertex0->vb), pMesh->GetUV(pVertex0->vu));
+		AddVertex(iMaterial, pMesh->GetVertex(pVertex1->v), pMesh->GetNormal(pVertex1->vn), pMesh->GetTangent(pVertex1->vt), pMesh->GetBitangent(pVertex1->vb), pMesh->GetUV(pVertex1->vu));
+		AddVertex(iMaterial, pMesh->GetVertex(pVertex2->v), pMesh->GetNormal(pVertex2->vn), pMesh->GetTangent(pVertex2->vt), pMesh->GetBitangent(pVertex2->vb), pMesh->GetUV(pVertex2->vu));
 	}
 }
 
