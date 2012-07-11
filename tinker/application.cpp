@@ -856,8 +856,7 @@ void CApplication::PrintConsole(const tstring& sText)
 
 void CApplication::PrintError(const tstring& sText)
 {
-	tstring sTrimmedText = sText;
-	sTrimmedText.trim();
+	tstring sTrimmedText = trim(sText);
 
 	GetConsole()->PrintConsole(tstring("[color=FF0000]ERROR: ") + sTrimmedText + "[/color]" + (sText.endswith("\n")?"\n":""));
 }
