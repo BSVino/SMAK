@@ -27,11 +27,13 @@ Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "smak-install.exe"
 ShowInstDetails show
 InstallDir $PROGRAMFILES\SMAK
+Icon "../smak/smak.ico"
+RequestExecutionLevel admin
 
 Section "-Program Files" FILES
 	SetOverwrite on
 	SetOutPath "$INSTDIR"
-	File /r /x *.svn "${LOCALDIR}\*.*"
+	File /r /x *.pdb "${LOCALDIR}\*.*"
 SectionEnd
 
 Section -StartMenu
