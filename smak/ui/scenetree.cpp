@@ -296,7 +296,7 @@ CMaterialEditor::CMaterialEditor(CConversionMaterial* pMaterial, CControl<CScene
 
 	m_hShininessLabel = AddControl(new CLabel(0, 0, 1, 1, "Shininess: "));
 	m_hShininessSelector = AddControl(new CScrollSelector<float>());
-	SetupSelector(m_hShininessSelector, 128);
+	SetupSelector(m_hShininessSelector, 127);
 	m_hShininessSelector->SetSelectedListener(this, SetShininess);
 
 
@@ -437,7 +437,7 @@ void CMaterialEditor::Layout()
 
 	m_hShininessSelector->SetHeight(40);
 	m_hShininessSelector->SetPos(flShininessRight, flHeight + m_hShininessLabel->GetHeight()/2 - m_hShininessSelector->GetHeight()/2);
-	m_hShininessSelector->SetSelection((int)(m_pMaterial->m_flShininess/127*20));
+	m_hShininessSelector->SetSelection(m_hShininessSelector->FindClosestSelectionValue(m_pMaterial->m_flShininess));
 	m_hShininessSelector->SetRight(GetWidth()-5);
 
 	CMovablePanel::Layout();

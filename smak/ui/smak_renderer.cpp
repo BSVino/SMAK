@@ -592,6 +592,9 @@ void CSMAKRenderer::RenderMeshInstance(CConversionMeshInstance* pMeshInstance)
 
 void CSMAKRenderer::RenderUV()
 {
+	if (!SMAKWindow()->GetMaterials().size())
+		return;
+
 	CRenderingContext c(this, true);
 
 	c.SetDepthTest(false);
