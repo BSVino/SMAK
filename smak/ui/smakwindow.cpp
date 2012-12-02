@@ -175,6 +175,7 @@ void CSMAKWindow::ReadFileIntoScene(const tchar* pszFile)
 	m_bLoadingFile = true;
 
 	CModelConverter c(&m_Scene);
+	c.SetWantEdges(false);
 
 	c.SetWorkListener(this);
 
@@ -254,6 +255,7 @@ void CSMAKWindow::SaveFile(const tchar* pszFile)
 		return;
 
 	CModelConverter c(&m_Scene);
+	c.SetWantEdges(false);
 
 	c.SetWorkListener(this);
 

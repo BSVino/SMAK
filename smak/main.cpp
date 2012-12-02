@@ -222,6 +222,7 @@ int CreateApplication(int argc, char** argv)
 
 			CConversionScene s;
 			CModelConverter c(&s);
+			c.SetWantEdges(false);
 
 			CPrintingWorkListener l;
 

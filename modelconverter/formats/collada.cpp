@@ -300,7 +300,8 @@ bool CModelConverter::ReadDAE(const tstring& sFilename)
 
 	for (size_t i = 0; i < m_pScene->GetNumMeshes(); i++)
 	{
-		m_pScene->GetMesh(i)->CalculateEdgeData();
+		if (m_bWantEdges)
+			m_pScene->GetMesh(i)->CalculateEdgeData();
 
 		if (m_pScene->GetMesh(i)->GetNumNormals() == 0)
 			m_pScene->GetMesh(i)->CalculateVertexNormals();
