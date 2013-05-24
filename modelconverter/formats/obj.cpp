@@ -93,20 +93,27 @@ bool CModelConverter::ReadOBJ(const tstring& sFilename)
 
 	fclose(fp);
 
+	const tchar* pszFileEnd = pszCurrent;
 	const tchar* pszLine = pszEntireFile;
 	const tchar* pszNextLine = NULL;
-	while (pszLine < pszCurrent)
+	while (pszLine < pszFileEnd)
 	{
 		if (pszNextLine)
 			pszLine = pszNextLine;
 
-		pszNextLine = pszLine + tstrlen(pszLine) + 1;
+		int iLineLength = tstrlen(pszLine);
+
+		pszNextLine = pszLine + iLineLength + 1;
 
 		// This code used to call StripWhitespace() but that's too slow for very large files w/ millions of lines.
 		// Instead we'll just cut the whitespace off the front and deal with whitespace on the end when we come to it.
 		while (*pszLine && IsWhitespace(*pszLine))
 			pszLine++;
 
+		if (pszLine >= pszFileEnd)
+			continue;
+
+		iLineLength = tstrlen(pszLine);
 		if (tstrlen(pszLine) == 0)
 			continue;
 
@@ -129,7 +136,9 @@ bool CModelConverter::ReadOBJ(const tstring& sFilename)
 		}
 
 		tchar szToken[1024];
-		tstrncpy(szToken, 1024, pszLine, tstrlen(pszLine)+1);
+		TAssertNoMsg(iLineLength < 1024);
+
+		tstrncpy(szToken, 1024, pszLine, iLineLength+1);
 		tchar* pszState = NULL;
 		tchar* pszToken = strtok<tchar>(szToken, " ", &pszState);
 
