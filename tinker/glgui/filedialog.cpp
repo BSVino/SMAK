@@ -45,6 +45,9 @@ CFileDialog::CFileDialog(const tstring& sDirectory, const tstring& sExtension, b
 	strtok(sExtension, m_asExtensions, ";");
 	m_iCurrentExtension = 0;
 
+	for (size_t i = 0; i < m_asExtensions.size(); i++)
+		m_asExtensions[i].tolower();
+
 	m_hDirectoryLabel = AddControl(new CLabel(5, 5, 1, 1, "Folder:"));
 	m_hDirectory = AddControl(new CTextField());
 	m_hDirectory->SetContentsChangedListener(this, NewDirectory);
@@ -104,6 +107,9 @@ void CFileDialog::Layout()
 	{
 		tstring sFile = asFiles[i];
 
+		tstring sFileLower = sFile;
+		sFileLower.tolower();
+
 		if (IsDirectory(m_sDirectory + DIR_SEP + sFile))
 		{
 			m_hFileList->AddNode(sFile + DIR_SEP);
@@ -112,7 +118,7 @@ void CFileDialog::Layout()
 
 		if (m_iCurrentExtension)
 		{
-			if (!sFile.endswith(m_asExtensions[m_iCurrentExtension-1]))
+			if (!sFileLower.endswith(m_asExtensions[m_iCurrentExtension-1]))
 				continue;
 
 			m_hFileList->AddNode(sFile);
@@ -121,7 +127,7 @@ void CFileDialog::Layout()
 		{
 			for (size_t j = 0; j < m_asExtensions.size(); j++)
 			{
-				if (!sFile.endswith(m_asExtensions[j]))
+				if (!sFileLower.endswith(m_asExtensions[j]))
 					continue;
 
 				m_hFileList->AddNode(sFile);
@@ -165,9 +171,12 @@ void CFileDialog::NewDirectoryCallback(const tstring& sArgs)
 
 	if (IsFile(m_sDirectory))
 	{
+		tstring sDirectoryLower = m_sDirectory;
+		sDirectoryLower.tolower();
+
 		for (size_t i = 0; i < m_asExtensions.size(); i++)
 		{
-			if (m_sDirectory.endswith(m_asExtensions[i]))
+			if (sDirectoryLower.endswith(m_asExtensions[i]))
 			{
 				FileConfirmed(m_sDirectory);
 				return;
@@ -281,6 +290,7 @@ tstring CFileDialog::GetFile()
 	if (pDialog->m_bSave && pDialog->m_hNewFile->GetText().length())
 	{
 		tstring sName = pDialog->m_hNewFile->GetText();
+		sName.tolower();
 
 		if (pDialog->m_iCurrentExtension)
 		{
